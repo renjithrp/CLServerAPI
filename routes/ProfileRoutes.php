@@ -54,6 +54,7 @@ $app->get('/profile/{id}', function ($request, $response, $args) {
 
 	$profile = Profile::leftjoin('role', 'profile.role_id','=','role.id')
 					->select('profile.*','role.name as role' )
+					->where('profile.org_id',$org['org_id'])
 					->where('role_id','!=','101')
 					->where('profile.id',$id)
 					->first();
