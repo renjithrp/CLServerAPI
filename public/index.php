@@ -40,6 +40,8 @@ require __DIR__ . '/../src/dependencies.php';
 $container = new \Slim\Container();
 
 require __DIR__ . '/../routes/UserRoutes.php';
+require __DIR__ . '/../routes/ProfileRoutes.php';
+
 
 // Run app
 $app->run();

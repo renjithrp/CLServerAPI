@@ -37,7 +37,7 @@ class Token{
 
    		if($jwt){
 
-        $session = Sessions::select('token')
+        $session = Sessions::select('token','user_id')
                     ->where('token',$jwt)
                     ->where('status',1)
                     ->first();
@@ -49,7 +49,7 @@ class Token{
 
             $secret = base64_encode('4uv6XCa04uv6XCa0');
             $token = JWT::decode($jwt, $secret, array('HS256'));
-            return True;
+            return $session->user_id;
 
           }
           catch (Exception $e){
