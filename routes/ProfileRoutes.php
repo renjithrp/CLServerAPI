@@ -44,39 +44,136 @@ $app->get('/profile', function ($request, $response, $args) {
 
  });
 
-$app->get('/profile/{id}', function ($request, $response, $args) {
-	
+
+
+$app->put('/profile', function ($request, $response, $args) {
+
 	$server = $request->getServerParams();
 	$token = new Apps\Controllers\Token;
 	$security = $request->getHeader('authorization');
 	$jwt = $token->validate($security);
 
+	
 	if ($jwt){
 
-		$id = $request->getAttribute('id');
-
-		$org = Users::select('org_id')->where('id',$jwt)->first();
-
-		$Organization = Profile::select('firstname as organization')
-						->where('role_id','101')
-						->where('id',$org['org_id'])->pluck('organization');
-
-		$profile = Profile::leftjoin('role', 'profile.role_id','=','role.id')
-					->select('profile.*','role.name as role' )
-					->where('profile.org_id',$org['org_id'])
-					->where('role_id','!=','101')
-					->where('profile.status','1')
-					->where('profile.id',$id)
+		$user = Users::select('id','role_id','org_id')
+					->where('id',$jwt)
+					->where('status','1')
 					->first();
 
-		if ($profile) {	return $response->withJson($profile);}
-			else {
-				$message = array(
-   					'status' => 'error',
-   					'message' => 'Invalid Profile id',
-   					);
-				return $response->withJson($message);
+		if ($user['id'] == $user['org_id']){
+
+			$validation = new Apps\Validation\Validator;
+
+			$validation->validate($request, [
+				'organization' => v::notEmpty(),
+				'phone' => v::noWhitespace()->notEmpty(),
+				'address'	=> v::notEmpty(),
+				]);
+			if ($validation->failed()){
+	
+				$errors = array('status' => 'error',
+						'message' => $_SESSION['errors'],
+						);
+
+				unset($_SESSION['errors']);
+				return $response->withJson($errors);
 			}
+
+			$profileCheck = Profile::where('user_id',$user['id'])->first();
+	
+        	if (!$profileCheck) {
+
+        		$message = array(
+
+   					'status' => 'error',
+   					'message' => 'Profile not found',
+   				);
+
+				return $response->withStatus(400)
+    			->withHeader("Content-Type", "application/json")
+    			->withJson($message);
+
+    		}
+
+
+    		ProfileUpdate::where('id',$profileCheck)
+    				->limit(1)
+    				->update($request->getParam())
+    		;
+		
+
+			$message = array(
+   				'status' => 'success',
+   				'message' => 'Profile created',
+   			);
+   			return $response->withJson($message,200);
+
+		}
+		else {
+
+			
+			$validation = new Apps\Validation\Validator;
+
+			$validation->validate($request, [
+				'firstname' => v::notEmpty(),
+				'phone' => v::noWhitespace()->notEmpty(),
+				'address'	=> v::notEmpty(),
+				]);
+			if ($validation->failed()){
+	
+				$errors = array('status' => 'error',
+						'message' => $_SESSION['errors'],
+						);
+
+				unset($_SESSION['errors']);
+				return $response->withJson($errors);
+			}
+
+			$profileCheck = Profile::where('user_id',$user['id'])->first();
+	
+        	if (!$profileCheck) {
+
+        		$message = array(
+
+   					'status' => 'error',
+   					'message' => 'Profile not found',
+   				);
+
+				return $response->withStatus(400)
+    			->withHeader("Content-Type", "application/json")
+    			->withJson($message);
+
+    		}
+
+    		$Values = $request->getParsedBody();
+    		unset($Values['org_id'],$Values['user_id'],$Values['role_id']);
+
+
+    		$res = Profile::select('firstname','lastname')->where('id',$profileCheck['id'])
+    				->limit(1)
+    				->update($Values);
+
+    		if ($res) {
+
+    			$message = array(
+   				'status' => 'success',
+   				'message' => 'Profile updated',);
+				return $response->withJson($message,200);
+    		}
+    		else {
+
+    			$message = array(
+   				'status' => 'failed',
+   				'message' => 'Bad request',);
+				return $response->withJson($message,500);
+    		}
+			
+
+
+		}
+
+
 	}
 	else {
 
@@ -87,9 +184,57 @@ $app->get('/profile/{id}', function ($request, $response, $args) {
 		return $response->withStatus(400)
     			->withHeader("Content-Type", "application/json")
     			->withJson($message);
+
 	}
-	
- });
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 $app->post('/profile', function ($request, $response, $args) {
 
