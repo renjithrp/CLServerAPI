@@ -9,19 +9,27 @@ use Apps\Controllers\Token;
 $app->get('/login', function ($request, $response, $args) {
 
 
-    $server = $request->getServerParams();
-    $now = new DateTime();
-	  $future = new DateTime("now +2 hours");
+  $server = $request->getServerParams();
+  $now = new DateTime();
+	$future = new DateTime("now +2 hours");
+
+  if ((isset($server["PHP_AUTH_USER"])) || (isset($server['PHP_AUTH_PW'])) ){
 
     $email = $server["PHP_AUTH_USER"];
     $password = $server['PHP_AUTH_PW'];
 
     $user = Users::where('email',$email)->first();
-        if (!$user) {
+      
+      if (!$user) {
 
-    	return false;
-
-    }
+    	 $message = array(
+        'status' => 'error',
+        'message' => 'Invalid User or password',
+        );
+        return $response->withStatus(400)
+              ->withHeader("Content-Type", "application/json")
+              ->withJson($message);
+      }
 
     $token = new Apps\Controllers\Token;
     $data = $token->create($server,$now,$future);
@@ -47,7 +55,17 @@ $app->get('/login', function ($request, $response, $args) {
     		->withHeader("Content-Type", "application/json")
     		->withJson($_SESSION['user']);
     }
+  }
+  else {
 
+    $message = array(
+        'status' => 'error',
+        'message' => 'Invalid User or password',
+        );
+    return $response->withStatus(400)
+              ->withHeader("Content-Type", "application/json")
+              ->withJson($message);
+  }
 
 });
 
@@ -57,6 +75,8 @@ $app->get('/logout', function ($request, $response, $args) {
 	$token = new Apps\Controllers\Token;
 	$security = $request->getHeader('authorization');
 	$jwt = $token->validate($security);
+
+  if ($jwt) {
 
 		$invalidate = $token->invalidate($security);
 		if ($invalidate){
@@ -80,7 +100,7 @@ $app->get('/logout', function ($request, $response, $args) {
     			->withJson($message);
 		}
 		
-	/*}
+	}
 	else {
 
 		$message = array(
@@ -90,7 +110,7 @@ $app->get('/logout', function ($request, $response, $args) {
 		return $response->withStatus(400)
     		->withHeader("Content-Type", "application/json")
     		->withJson($message);
-	} */
+	} 
 
 
 });
