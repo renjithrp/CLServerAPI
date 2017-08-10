@@ -51,6 +51,8 @@ $app->get('/login', function ($request, $response, $args) {
    			'status' => $status,
    		]); 
     
+      unset($_SESSION['user']);
+      
     	return $response->withStatus(201)
     		->withHeader("Content-Type", "application/json")
     		->withJson($_SESSION['user']);
