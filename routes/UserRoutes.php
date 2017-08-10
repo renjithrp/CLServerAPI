@@ -36,7 +36,7 @@ $app->get('/login', function ($request, $response, $args) {
     $status = True;
     if (password_verify($password, $user->password)){
 
-    		$_SESSION['user'] = array('id' => $user->id,
+    		$userinfo = array('id' => $user->id,
     		'email' => $user->email,
     		'role_id' => $user->role_id,
     		'org_id' => $user->org_id,
@@ -51,11 +51,10 @@ $app->get('/login', function ($request, $response, $args) {
    			'status' => $status,
    		]); 
     
-      unset($_SESSION['user']);
-      
+
     	return $response->withStatus(201)
     		->withHeader("Content-Type", "application/json")
-    		->withJson($_SESSION['user']);
+    		->withJson($userinfo);
     }
   }
   else {
