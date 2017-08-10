@@ -43,6 +43,7 @@ require __DIR__ . '/../routes/UserRoutes.php';
 require __DIR__ . '/../routes/ProfileRoutes.php';
 require __DIR__ . '/../routes/RoleRoutes.php';
 require __DIR__ . '/../routes/RatingRoutes.php';
+require __DIR__ . '/../routes/TestimonialsRoutes.php';
 
 // Run app
 $app->run();
