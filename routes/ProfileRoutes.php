@@ -190,52 +190,6 @@ $app->put('/profile', function ($request, $response, $args) {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 $app->post('/profile', function ($request, $response, $args) {
 
 	$server = $request->getServerParams();
