@@ -24,7 +24,7 @@ $app->get('/profile', function ($request, $response, $args) {
 						->where('role_id','101')
 						->where('id',$org['org_id'])->pluck('organization');
 
-				$profile = Profile::where('profile.org_id',$org['org_id'])
+		$profile = Profile::where('profile.org_id',$org['org_id'])
 					->where('profile.user_id',$jwt)
 					->where('profile.status','1')
 					->get();
@@ -240,7 +240,7 @@ $app->post('/profile', function ($request, $response, $args) {
 
     		}
 
-			 Profile::create([
+			Profile::create([
 
    				'firstname' => $request->getParam('organization'),
    				'phone' => $request->getParam('phone'),

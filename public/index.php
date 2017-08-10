@@ -42,7 +42,7 @@ $container = new \Slim\Container();
 require __DIR__ . '/../routes/UserRoutes.php';
 require __DIR__ . '/../routes/ProfileRoutes.php';
 require __DIR__ . '/../routes/RoleRoutes.php';
-
+require __DIR__ . '/../routes/RatingRoutes.php';
 
 // Run app
 $app->run();
