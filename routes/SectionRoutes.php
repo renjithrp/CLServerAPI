@@ -405,6 +405,7 @@ function GetExam($request, $response, $args){
 
 					$q->answers =  Answers::select('id as ans_id', 'answer','flag')
 									->where('qust_id',$q['id'])
+									->where('status','1')
 									->get();			
 					}
 
