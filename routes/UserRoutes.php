@@ -11,7 +11,7 @@ $app->get('/login', function ($request, $response, $args) {
 
   $server = $request->getServerParams();
   $now = new DateTime();
-	$future = new DateTime("now +2 hours");
+	$future = new DateTime("now +5 hours");
 
   if ((isset($server["PHP_AUTH_USER"])) || (isset($server['PHP_AUTH_PW'])) ){
 
