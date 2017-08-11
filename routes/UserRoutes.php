@@ -1,17 +1,20 @@
 <?php
-// Routes
+
 use Apps\Models\Users;
 use Apps\Models\Sessions;
 use Respect\Validation\Validator as v;
 use Apps\Controllers\Token;
+use Apps\Controllers\Getid;
+use Apps\Controllers\GetName;
+use Apps\Controllers\Messages as m;
 
 
-$app->get('/login', function ($request, $response, $args) {
-
+function UserLogin ($request, $response, $args) {
 
   $server = $request->getServerParams();
   $now = new DateTime();
 	$future = new DateTime("now +5 hours");
+  $m = new m;
 
   if ((isset($server["PHP_AUTH_USER"])) || (isset($server['PHP_AUTH_PW'])) ){
 
@@ -20,103 +23,90 @@ $app->get('/login', function ($request, $response, $args) {
 
     $user = Users::where('email',$email)->first();
       
-      if (!$user) {
+    if (!$user) {
 
-    	 $message = array(
-        'status' => 'error',
-        'message' => 'Invalid User or password',
-        );
-        return $response->withStatus(400)
-              ->withHeader("Content-Type", "application/json")
-              ->withJson($message);
-      }
+      return $m->failed($response,'Invalid User or password');
+
+    }
 
     $token = new Apps\Controllers\Token;
     $data = $token->create($server,$now,$future);
     $status = True;
     if (password_verify($password, $user->password)){
 
-    		$userinfo = array('id' => $user->id,
+        $id = new Getid;
+        $gname = new GetName;
+        $orgId = $id->org($user->id);
+        $profileID = $id->profile($user->id)[0];
+        $name = $gname->name($user->id);
+
+    		$userinfo = array('profile_id' => $profileID ,
+        'firstname' => $name['firstname'],
+        'lastname' => $name['lastname'],
     		'email' => $user->email,
     		'role_id' => $user->role_id,
     		'org_id' => $user->org_id,
     		'secure' => $data,
     		);
 
-      Sessions::create([
-   			'token' => $data['token'],
-   			'user_id' => $user->id,
-   			'created_at' => $now,
-   			'valid_till' => $future,
-   			'status' => $status,
-   		]); 
-    
+        $session = Sessions::create([
+   			  'token' => $data['token'],
+   			  'user_id' => $user->id,
+   			  'created_at' => $now,
+   			  'valid_till' => $future,
+   			  'status' => $status,
+   		   ]);
 
-    	return $response->withStatus(201)
-    		->withHeader("Content-Type", "application/json")
-    		->withJson($userinfo);
+        if ($session){
+        
+          return $m->data($response,$userinfo);
+        }
+        else{
+
+          $m->error($response);
+        }
+    }
+    else {
+
+      return $m->failed($response,'Invalid User or password');
     }
   }
   else {
 
-    $message = array(
-        'status' => 'error',
-        'message' => 'Invalid User or password',
-        );
-    return $response->withStatus(400)
-              ->withHeader("Content-Type", "application/json")
-              ->withJson($message);
+    return $m->failed($response,'Invalid User or password');
   }
+}
 
-});
-
-
-$app->get('/logout', function ($request, $response, $args) {
+ function UserLogout ($request, $response, $args) {
 
 	$token = new Apps\Controllers\Token;
 	$security = $request->getHeader('authorization');
 	$jwt = $token->validate($security);
+  $m = new m;
 
   if ($jwt) {
 
 		$invalidate = $token->invalidate($security);
 		if ($invalidate){
 
-			$message = array(
-   				'status' => 'success',
-   				'message' => 'User has been logedout',
-   			);
-			return $response->withStatus(200)
-    			->withHeader("Content-Type", "application/json")
-    			->withJson($message);
+      return $m->success($response,'User has been logedout');
 		}
 		else {
 
-			$message = array(
-   				'status' => 'failed',
-   				'message' => 'Invalid token',
-   			);
-			return $response->withStatus(400)
-    			->withHeader("Content-Type", "application/json")
-    			->withJson($message);
+      return $m->failed($response,'Invalid token');
+
 		}
 		
 	}
 	else {
 
-		$message = array(
-   		'status' => 'error',
-   		'message' => 'Security token is not valid',
-   		);
-		return $response->withStatus(400)
-    		->withHeader("Content-Type", "application/json")
-    		->withJson($message);
+    return $m->failed($response,'Invalid token');
 	} 
 
 
-});
+}
 
-$app->post('/signup', function ($request, $response, $args) {
+function UserSignup($request, $response, $args) {
 
 	/*
 	** Important message for developers **
@@ -131,6 +121,7 @@ $app->post('/signup', function ($request, $response, $args) {
 	$status = True; # set this to False when it goes to production
 
 	$validation = new Apps\Validation\Validator;
+  $m = new m;
 	$validation->validate($request, [
 		'email' => v::noWhitespace()->notEmpty()->emailAvailable(),
 		'password' => v::noWhitespace()->notEmpty(),
@@ -139,16 +130,20 @@ $app->post('/signup', function ($request, $response, $args) {
 	]);
 	if ($validation->failed()){
 	
-		$errors = array('status' => 'error',
+		$errors = array('status' => 'failed',
 			'message' => $_SESSION['errors'],
 
 			);
 		unset($_SESSION['errors']);
-		return $response->withJson($errors);
 
+    $message = array();
+    $message['response_status'] = $errors;
+    $message['response_data'] = array();
+    return $response->withStatus(200)
+          ->withHeader("Content-Type", "application/json")
+          ->withJson($message);
+    
 	}
-
-
    	$role_id =  $request->getParam('role_id');
 
    	if ($role_id == 101){
@@ -175,11 +170,6 @@ $app->post('/signup', function ($request, $response, $args) {
 
    		$user->org_id = $user->id;
    		$user->save();
-
    	}
-   	$message = array(
-   		'status' => 'success',
-   		'message' => 'Please check your email to complete signup process',
-   		);
-   	return $response->withJson($message,200);
-});
+    return $m->success($response,'Please check your email to complete signup process');
+}

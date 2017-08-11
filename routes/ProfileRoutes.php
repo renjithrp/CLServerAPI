@@ -5,6 +5,7 @@ use Apps\Models\Sessions;
 use Apps\Models\Role;
 use Respect\Validation\Validator as v;
 use Apps\Controllers\Token;
+use Apps\Controllers\Messages as m;
 
 
 $app->get('/profile', function ($request, $response, $args) {
@@ -13,6 +14,7 @@ $app->get('/profile', function ($request, $response, $args) {
 	$token = new Apps\Controllers\Token;
 	$security = $request->getHeader('authorization');
 	$jwt = $token->validate($security);
+	$m = new m;
 	//if the token is valid it will return UserID
 
 	if ($jwt){
@@ -29,22 +31,16 @@ $app->get('/profile', function ($request, $response, $args) {
 					->where('profile.status','1')
 					->get();
 
+					//$a = strtoupper(uniqid("ASQ"));
+					//echo $a;
+					//exit;
+
 		return $response->withJson($profile);
 	}
 	else {
-
-		$message = array(
-   				'status' => 'failed',
-   				'message' => 'Invalid token',
-   			);
-		return $response->withStatus(400)
-    			->withHeader("Content-Type", "application/json")
-    			->withJson($message);
+		return $m->failed($response,"Invalid token");
 	}
-
  });
-
-
 
 $app->put('/profile', function ($request, $response, $args) {
 
@@ -52,6 +48,7 @@ $app->put('/profile', function ($request, $response, $args) {
 	$token = new Apps\Controllers\Token;
 	$security = $request->getHeader('authorization');
 	$jwt = $token->validate($security);
+	$m = new m;
 
 	
 	if ($jwt){
@@ -168,25 +165,12 @@ $app->put('/profile', function ($request, $response, $args) {
    				'message' => 'Bad request',);
 				return $response->withJson($message,500);
     		}
-			
-
-
 		}
-
-
 	}
 	else {
 
-		$message = array(
-   				'status' => 'failed',
-   				'message' => 'Invalid token',
-   			);
-		return $response->withStatus(400)
-    			->withHeader("Content-Type", "application/json")
-    			->withJson($message);
-
+		return $m->failed($response,"Invalid token");
 	}
-
 });
 
 
@@ -196,6 +180,7 @@ $app->post('/profile', function ($request, $response, $args) {
 	$token = new Apps\Controllers\Token;
 	$security = $request->getHeader('authorization');
 	$jwt = $token->validate($security);
+	$m = new m;
 
 	
 	if ($jwt){
@@ -328,14 +313,7 @@ $app->post('/profile', function ($request, $response, $args) {
 	}
 	else {
 
-		$message = array(
-   				'status' => 'failed',
-   				'message' => 'Invalid token',
-   			);
-		return $response->withStatus(400)
-    			->withHeader("Content-Type", "application/json")
-    			->withJson($message);
-
+		return $m->failed($response,"Invalid token");
 	}
 
 

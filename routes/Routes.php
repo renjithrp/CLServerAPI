@@ -1,4 +1,17 @@
 <?php
+
+//userRoutes//
+$app->get('/login','UserLogin');
+$app->get('/logout','UserLogout');
+$app->post('/signup','UserSignup');
+
+//Testimonials
+
+$app->get('/testimonials', 'GetTestimonials');
+$app->get('/testimonials/{pro_id}', 'GetProfleTestimonial');
+$app->post('/testimonials/{pro_id}', 'CreateProfileTestimonial');
+$app->put('/testimonials/{pro_id}/{id}', 'UpdateProfileTestimonial');
+
 //section Routes//
 $app->get('/sections', 'GetSections');
 $app->get('/sections/{sec_id}', 'GetSubjects');
