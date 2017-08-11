@@ -1,5 +1,5 @@
 <?php
-
+//section Routes//
 $app->get('/sections', 'GetSections');
 $app->get('/sections/{sec_id}', 'GetSubjects');
 $app->get('/sections/{sec_id}/subjects', 'GetSubjects');
