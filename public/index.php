@@ -45,6 +45,7 @@ require __DIR__ . '/../routes/RoleRoutes.php';
 require __DIR__ . '/../routes/RatingRoutes.php';
 require __DIR__ . '/../routes/TestimonialsRoutes.php';
 require __DIR__ . '/../routes/SectionRoutes.php';
+require __DIR__ . '/../routes/Routes.php';
 
 
 // Run app
