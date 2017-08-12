@@ -9,11 +9,7 @@ function VeryfyEmail($request, $response, $args){
         $pin .= mt_rand(0, 9);
         $i++;
     }
-
-    echo $pin;
     
-	$param = "secret-password-reset-code";
-
     $mail = new PHPMailer;
 
     $mail->setFrom('renjith.net@hotmail.com', 'CollobarateLearning');
@@ -23,8 +19,7 @@ function VeryfyEmail($request, $response, $args){
     $mail->isHTML(true);                                  // Set email format to HTML
 
     $mail->Subject = "Verification code $pin";
-    $mail->Body    = "Verification code $pin"
-        ;
+    $mail->Body    = "Verification code $pin";
 
     if(!$mail->send()) {
        echo "sss";

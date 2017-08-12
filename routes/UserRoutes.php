@@ -1,12 +1,14 @@
 <?php
 
 use Apps\Models\Users;
+use Apps\Models\Verification;
 use Apps\Models\Sessions;
 use Respect\Validation\Validator as v;
 use Apps\Controllers\Token;
 use Apps\Controllers\Getid;
 use Apps\Controllers\GetName;
 use Apps\Controllers\Messages as m;
+use Apps\Controllers\SendEmail;
 
 
 function UserLogin ($request, $response, $args) {
@@ -168,5 +170,30 @@ function UserSignup($request, $response, $args) {
    		$user->org_id = $user->id;
    		$user->save();
    	}
-    return $m->success($response,'Please check your email to complete signup process');
+
+    $email = $request->getParam('email');
+    $mail = new SendEmail;
+
+    $i = 0; //counter
+      $pin = ""; //our default pin is blank.
+      while($i < 4){
+        //generate a random number between 0 and 9.
+          $pin .= mt_rand(0, 9);
+          $i++;
+      }
+
+    Verification::create([
+        'email' => $email,
+        'code' => $pin,
+        'status' => 1,
+      ]);
+
+    $status = $mail->verification($email,$pin);
+
+    if ($status){
+      return $m->success($response, "Verification code send to $email");
+    }
+    else {
+      return $m->error($response);
+    }
 }
