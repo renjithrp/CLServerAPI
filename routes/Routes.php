@@ -36,3 +36,7 @@ $app->get('/sections/{sec_id}/subjects/{subj_id}/exams/{exam_id}', 'GetExam');
 
 //Role
 $app->get('/role', 'GetRole');
+
+
+//VeryfyEmail
+$app->post('/verify', 'VeryfyEmail');
