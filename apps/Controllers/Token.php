@@ -6,6 +6,7 @@ use Ramsey\Uuid\Uuid;
 use Firebase\JWT\JWT;
 use Firebase\JWT\JWTAuth;
 use Tuupola\Base62;
+use Apps\Controllers\Messages as m;
 #use Acme\StoreBundle\Repository\DateTime;
 
 class Token{
@@ -50,9 +51,18 @@ class Token{
             return $session->user_id;
 
           }
-          catch (Exception $e){
+          catch (\Firebase\JWT\ExpiredException $e){
 
             header('HTTP/1.0 401 Unauthorized');
+            header('Content-Type: application/json;charset=utf-8');
+            $msg = $e->getMessage();
+            $message['response_status']  = array(
+              'status' => 'failed',
+              'message' => $msg,
+            );
+            $message['response_data'] = array();
+            print json_encode($message);
+            die();
           }
         }
         else {

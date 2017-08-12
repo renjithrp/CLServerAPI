@@ -7,6 +7,8 @@ use Apps\Controllers\Token;
 use Apps\Controllers\Messages as m;
 use Apps\Controllers\Getid;
 use Apps\Controllers\GetName;
+use Firebase\JWT\JWT;
+use Firebase\JWT\JWTAuth;
 
 function GetRole($request, $response, $args) {
 
