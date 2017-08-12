@@ -38,6 +38,7 @@ function UserLogin ($request, $response, $args) {
         $gname = new GetName;
         $orgId = $id->org($user->id);
         $profileID = $id->profile($user->id)[0];
+
         $name = $gname->name($user->id);
 
     		$userinfo = array('profile_id' => $profileID ,

@@ -21,6 +21,12 @@ class Getid{
 		$pid = Profile::select('id')
 				->where('user_id',$uid)
 				->pluck('id');
+				
+		if(count($pid) == 0){
+
+          $pid = Null;
+        }
+
 		return $pid;
 	}
 	function role($uid){
