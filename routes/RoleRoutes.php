@@ -4,14 +4,18 @@ use Apps\Models\Users;
 use Apps\Models\Role;
 use Respect\Validation\Validator as v;
 use Apps\Controllers\Token;
+use Apps\Controllers\Messages as m;
+use Apps\Controllers\Getid;
+use Apps\Controllers\GetName;
 
-$app->get('/role', function ($request, $response, $args) {
+function GetRole($request, $response, $args) {
 
 	$server = $request->getServerParams();
 	$token = new Apps\Controllers\Token;
 	$security = $request->getHeader('authorization');
 	$jwt = $token->validate($security);
 	//if the token is valid it will return UserID
+	$m = new m;
 
 	if ($jwt){
 
@@ -22,18 +26,16 @@ $app->get('/role', function ($request, $response, $args) {
 				->where('id',$UserRole['role_id'])
 				->where('status','1')
 				->first();
-		return $response->withJson($role);
+		if ($role){
 
-			}
+			return $m->data($response,$role);
+		}
+		else{
+			return $m->error($response);
+		}
+	}
 	else {
 
-		$message = array(
-   				'status' => 'failed',
-   				'message' => 'Invalid token',
-   			);
-		return $response->withStatus(400)
-    			->withHeader("Content-Type", "application/json")
-    			->withJson($message);
+		return $m->failed($response,'Invalid token');
 	}
-
- });
+ }

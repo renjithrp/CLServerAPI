@@ -26,14 +26,12 @@ class Token{
     	return $data;
     }
 
-
    	function validate($authHeader){
 
    		
    		$string = implode("",$authHeader);
   
    		list($jwt) = sscanf( $string, 'Bearer %s');
-
 
    		if($jwt){
 
@@ -61,10 +59,8 @@ class Token{
 
              header('HTTP/1.0 400 Bad Request');
         }
-
-       }
-
-   	}
+      }
+   }
 
    	function invalidate($authHeader){
 
@@ -80,9 +76,6 @@ class Token{
         $session->status = $false;
         $session->save();
         return true;
-
       }
-
-   }
-   	
+   }  	
 }

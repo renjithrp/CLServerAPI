@@ -4,6 +4,9 @@ namespace Apps\Controllers;
 use Apps\Models\Users;
 use Apps\Models\Profile;
 use Apps\Models\Role;
+use Apps\Controllers\Messages as m;
+use Apps\Controllers\Getid;
+use Apps\Controllers\GetName;
 
 
 class Getid{
@@ -14,14 +17,13 @@ class Getid{
 			->where('id',$uid)
 			->pluck('org_id');
 		return $uid;
-
 	}
 	function profile($uid){
 
 		$pid = Profile::select('id')
 				->where('user_id',$uid)
 				->pluck('id');
-				
+
 		if(count($pid) == 0){
 
           $pid = Null;
@@ -37,6 +39,4 @@ class Getid{
 
 		return $rid;
 	}
-
-
 }

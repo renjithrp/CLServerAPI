@@ -95,16 +95,12 @@ function UserLogin ($request, $response, $args) {
 		else {
 
       return $m->failed($response,'Invalid token');
-
 		}
-		
 	}
 	else {
 
     return $m->failed($response,'Invalid token');
 	} 
-
-
 }
 
 function UserSignup($request, $response, $args) {
@@ -124,11 +120,11 @@ function UserSignup($request, $response, $args) {
 	$validation = new Apps\Validation\Validator;
   $m = new m;
 	$validation->validate($request, [
-		'email' => v::noWhitespace()->notEmpty()->emailAvailable(),
-		'password' => v::noWhitespace()->notEmpty(),
-		'role_id'	=> v::noWhitespace()->notEmpty(),
+		  'email' => v::noWhitespace()->notEmpty()->emailAvailable(),
+		  'password' => v::noWhitespace()->notEmpty(),
+		  'role_id'	=> v::noWhitespace()->notEmpty(),
+	   ]);
 
-	]);
 	if ($validation->failed()){
 	
 		$errors = array('status' => 'failed',
