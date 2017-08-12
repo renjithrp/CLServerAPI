@@ -5,6 +5,13 @@ $app->get('/login','UserLogin');
 $app->get('/logout','UserLogout');
 $app->post('/signup','UserSignup');
 
+
+#ProfileRoutes
+$app->get('/profile', 'GetProfile');
+$app->put('/profile', 'UpdateProfile');
+$app->post('/profile', 'CreateProfile');
+
+
 //Testimonials
 
 $app->get('/testimonials', 'GetTestimonials');

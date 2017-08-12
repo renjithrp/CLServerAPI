@@ -8,7 +8,7 @@ use Apps\Controllers\Token;
 use Apps\Controllers\Messages as m;
 
 
-$app->get('/profile', function ($request, $response, $args) {
+function GetProfile($request, $response, $args) {
 
 	$server = $request->getServerParams();
 	$token = new Apps\Controllers\Token;
@@ -40,9 +40,9 @@ $app->get('/profile', function ($request, $response, $args) {
 	else {
 		return $m->failed($response,"Invalid token");
 	}
- });
+ }
 
-$app->put('/profile', function ($request, $response, $args) {
+function UpdateProfile ($request, $response, $args) {
 
 	$server = $request->getServerParams();
 	$token = new Apps\Controllers\Token;
@@ -50,7 +50,6 @@ $app->put('/profile', function ($request, $response, $args) {
 	$jwt = $token->validate($security);
 	$m = new m;
 
-	
 	if ($jwt){
 
 		$user = Users::select('id','role_id','org_id')
@@ -63,10 +62,11 @@ $app->put('/profile', function ($request, $response, $args) {
 			$validation = new Apps\Validation\Validator;
 
 			$validation->validate($request, [
-				'organization' => v::notEmpty(),
+				'org_name' => v::notEmpty(),
 				'phone' => v::noWhitespace()->notEmpty(),
 				'address'	=> v::notEmpty(),
 				]);
+			
 			if ($validation->failed()){
 	
 				$errors = array('status' => 'error',
@@ -74,41 +74,40 @@ $app->put('/profile', function ($request, $response, $args) {
 						);
 
 				unset($_SESSION['errors']);
-				return $response->withJson($errors);
+				$message = array();
+    			$message['response_status'] = $errors;
+    			$message['response_data'] = array();
+    			return $response->withStatus(400)
+          				->withHeader("Content-Type", "application/json")
+          				->withJson($message);
 			}
 
 			$profileCheck = Profile::where('user_id',$user['id'])->first();
 	
         	if (!$profileCheck) {
 
-        		$message = array(
-
-   					'status' => 'error',
-   					'message' => 'Profile not found',
-   				);
-
-				return $response->withStatus(400)
-    			->withHeader("Content-Type", "application/json")
-    			->withJson($message);
-
+        		return $m->failed($response,"Profile not found");
     		}
 
+    		$Values = $request->getParsedBody();
+    		unset($Values['org_id'],$Values['user_id'],$Values['role_id']);
+    		$Values['firstname'] = $Values['org_name'];
+    		unset($Values['org_name']);
 
-    		ProfileUpdate::where('id',$profileCheck)
+    		$res = Profile::select('firstname','lastname')->where('id',$profileCheck['id'])
     				->limit(1)
-    				->update($request->getParam())
-    		;
-		
+    				->update($Values);
+    	
+			if ($res) {
 
-			$message = array(
-   				'status' => 'success',
-   				'message' => 'Profile created',
-   			);
-   			return $response->withJson($message,200);
+				return $m->success($response,"Profile updated");
+    		}
+    		else {
 
+    			return $m->error($response);
+    		}
 		}
 		else {
-
 			
 			$validation = new Apps\Validation\Validator;
 
@@ -124,23 +123,19 @@ $app->put('/profile', function ($request, $response, $args) {
 						);
 
 				unset($_SESSION['errors']);
-				return $response->withJson($errors);
+				$message = array();
+    			$message['response_status'] = $errors;
+    			$message['response_data'] = array();
+    			return $response->withStatus(200)
+          				->withHeader("Content-Type", "application/json")
+          				->withJson($message);
 			}
 
 			$profileCheck = Profile::where('user_id',$user['id'])->first();
 	
         	if (!$profileCheck) {
 
-        		$message = array(
-
-   					'status' => 'error',
-   					'message' => 'Profile not found',
-   				);
-
-				return $response->withStatus(400)
-    			->withHeader("Content-Type", "application/json")
-    			->withJson($message);
-
+        		return $m->failed($response,"Profile not found");
     		}
 
     		$Values = $request->getParsedBody();
@@ -153,17 +148,11 @@ $app->put('/profile', function ($request, $response, $args) {
 
     		if ($res) {
 
-    			$message = array(
-   				'status' => 'success',
-   				'message' => 'Profile updated',);
-				return $response->withJson($message,200);
+				return $m->success($response,"Profile updated");
     		}
     		else {
 
-    			$message = array(
-   				'status' => 'failed',
-   				'message' => 'Bad request',);
-				return $response->withJson($message,500);
+    			return $m->error($response);
     		}
 		}
 	}
@@ -171,10 +160,10 @@ $app->put('/profile', function ($request, $response, $args) {
 
 		return $m->failed($response,"Invalid token");
 	}
-});
+}
 
 
-$app->post('/profile', function ($request, $response, $args) {
+function CreateProfile($request, $response, $args) {
 
 	$server = $request->getServerParams();
 	$token = new Apps\Controllers\Token;
@@ -182,7 +171,6 @@ $app->post('/profile', function ($request, $response, $args) {
 	$jwt = $token->validate($security);
 	$m = new m;
 
-	
 	if ($jwt){
 
 		$user = Users::select('id','role_id','org_id')
@@ -195,7 +183,7 @@ $app->post('/profile', function ($request, $response, $args) {
 			$validation = new Apps\Validation\Validator;
 
 			$validation->validate($request, [
-				'organization' => v::notEmpty(),
+				'org_name' => v::notEmpty(),
 				'phone' => v::noWhitespace()->notEmpty(),
 				'address'	=> v::notEmpty(),
 				]);
@@ -206,28 +194,25 @@ $app->post('/profile', function ($request, $response, $args) {
 						);
 
 				unset($_SESSION['errors']);
-				return $response->withJson($errors);
+
+				$message = array();
+    			$message['response_status'] = $errors;
+    			$message['response_data'] = array();
+    			return $response->withStatus(200)
+          				->withHeader("Content-Type", "application/json")
+          				->withJson($message);
 			}
 
 			$profileCheck = Profile::where('user_id',$user['id'])->first();
 	
         	if ($profileCheck) {
 
-        		$message = array(
-
-   					'status' => 'error',
-   					'message' => 'Profile already exists',
-   				);
-
-				return $response->withStatus(400)
-    			->withHeader("Content-Type", "application/json")
-    			->withJson($message);
-
+   				return $m->failed($response,"Profile already exists");
     		}
 
-			Profile::create([
+			$profileDb = Profile::create([
 
-   				'firstname' => $request->getParam('organization'),
+   				'firstname' => $request->getParam('org_name'),
    				'phone' => $request->getParam('phone'),
    				'address' => $request->getParam('address'),
    				'web' => $request->getParam('web'),
@@ -238,18 +223,18 @@ $app->post('/profile', function ($request, $response, $args) {
    				'role_id' => $user['role_id'],
    				'status' => '1',
    			]);
-		
 
-			$message = array(
-   				'status' => 'success',
-   				'message' => 'Profile created',
-   			);
-   			return $response->withJson($message,200);
+			if ($profileDb) {
 
+				return $m->success($response,"Profile created");
+			}
+			else{
+
+				return $m->error($response);
+			}
 		}
 		else {
 
-			
 			$validation = new Apps\Validation\Validator;
 
 			$validation->validate($request, [
@@ -264,26 +249,21 @@ $app->post('/profile', function ($request, $response, $args) {
 						);
 
 				unset($_SESSION['errors']);
-				return $response->withJson($errors);
+				$message = array();
+    			$message['response_status'] = $errors;
+    			$message['response_data'] = array();
+    			return $response->withStatus(200)
+          				->withHeader("Content-Type", "application/json")
+          				->withJson($message);
 			}
 
 			$profileCheck = Profile::where('user_id',$user['id'])->first();
 	
         	if ($profileCheck) {
 
-        		$message = array(
-
-   					'status' => 'error',
-   					'message' => 'Profile already exists',
-   				);
-
-				return $response->withStatus(400)
-    			->withHeader("Content-Type", "application/json")
-    			->withJson($message);
-
+				return $m->failed($response,"Profile already exists");
     		}
-
-			 Profile::create([
+			$profileDb = Profile::create([
 
    				'firstname' => $request->getParam('firstname'),
    				'lastname' => $request->getParam('lastname'),
@@ -299,22 +279,17 @@ $app->post('/profile', function ($request, $response, $args) {
    				'status' => '1',
    			]);
 		
+			if ($profileDb) {
 
-			$message = array(
-   				'status' => 'success',
-   				'message' => 'Profile created',
-   			);
-   			return $response->withJson($message,200);
+				return $m->success($response,"Profile created");
+			}
+			else{
 
-
+				return $m->error($response);
+			}
 		}
-
-
 	}
 	else {
-
 		return $m->failed($response,"Invalid token");
 	}
-
-
-});
+}
