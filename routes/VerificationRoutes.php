@@ -22,7 +22,7 @@ function VeryfyEmail($request, $response, $args){
 
     $mail->isHTML(true);                                  // Set email format to HTML
 
-    $mail->Subject = 'Verification code $pin';
+    $mail->Subject = "Verification code $pin";
     $mail->Body    = "Verification code $pin"
         ;
 
