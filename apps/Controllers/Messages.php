@@ -14,6 +14,7 @@ class Messages {
    				'message' => $msg,
    			);
     $message['response_data'] = array();
+    
 		return $response->withStatus(200)
     			->withHeader("Content-Type", "application/json")
     			->withJson($message);

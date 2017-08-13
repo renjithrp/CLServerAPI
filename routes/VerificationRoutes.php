@@ -1,27 +1,30 @@
 <?php
 
+use Apps\Models\Verification;
+use Apps\Controllers\Messages as m;
+
 function VeryfyEmail($request, $response, $args){
 
-	$i = 0; //counter
-    $pin = ""; //our default pin is blank.
-    while($i < 4){
-        //generate a random number between 0 and 9.
-        $pin .= mt_rand(0, 9);
-        $i++;
-    }
-    
-    $mail = new PHPMailer;
+	$code = $request->getParams('code');
+	$email = $request->getParams('email');
 
-    $mail->setFrom('renjith.net@hotmail.com', 'CollobarateLearning');
-    $mail->addAddress($request->getParam('email'));
-    $mail->addReplyTo('no-reply@CollobarateLearning.com', 'CollobarateLearning.com');
 
-    $mail->isHTML(true);                                  // Set email format to HTML
+	$m = new m;
 
-    $mail->Subject = "Verification code $pin";
-    $mail->Body    = "Verification code $pin";
+	$result = Verification::where('status',1)
+		->where('email',$email)
+		->where('code',$code)
+		->first();
 
-    if(!$mail->send()) {
-       echo "sss";
-    }   
-  }  
+	if ($result){
+		
+
+		$result->status = 0;
+		$result->save();
+		return $m->success($response,'Verification completed');
+	}
+	else{
+
+		return $m->failed($response,'Invalid verification code');
+	}
+ }  
