@@ -14,6 +14,7 @@ function VeryfyEmail($request, $response, $args){
 	$result = Verification::where('status',1)
 		->where('email',$email)
 		->where('code',$code)
+		->orderBy('created_at', 'ASC')
 		->first();
 
 	if ($result){
