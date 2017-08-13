@@ -87,5 +87,55 @@ class Token{
         $session->save();
         return true;
       }
-   }  	
+   } 
+
+   function examtoken($user,$now,$future){
+
+      $jti = (new Base62)->encode(random_bytes(16));
+      $payload = [
+          "iat" => $now->getTimeStamp(),
+          "exp" => $future->getTimeStamp(),
+          "jti" => $jti,
+          "sub" => $user,
+      ];
+      $secret = base64_encode('exam4uv6XCa04uv6XCa0');
+      $token = JWT::encode($payload, $secret, "HS256");
+      $data["token"] = $token;
+      $data["expires"] = $future->getTimeStamp();
+      return $data;
+    }
+
+    function validateExam($authHeader){
+
+      
+      $string = implode("",$authHeader);
+  
+      list($jwt) = sscanf( $string, 'Bearer %s');
+
+      if($jwt){
+
+
+          try{
+
+            $secret = base64_encode('exam4uv6XCa04uv6XCa0');
+            $token = JWT::decode($jwt, $secret, array('HS256'));
+           
+            return True;
+
+          }
+          catch (\Firebase\JWT\ExpiredException $e){
+
+            header('HTTP/1.0 401 Unauthorized');
+            header('Content-Type: application/json;charset=utf-8');
+            $msg = $e->getMessage();
+            $message['response_status']  = array(
+              'status' => 'failed',
+              'message' => $msg,
+            );
+            $message['response_data'] = array();
+            print json_encode($message);
+            die();
+          }
+      }
+   }
 }

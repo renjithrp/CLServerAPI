@@ -8,7 +8,6 @@ function VeryfyEmail($request, $response, $args){
 	$code = $request->getParams('code');
 	$email = $request->getParams('email');
 
-
 	$m = new m;
 
 	$result = Verification::where('status',1)
@@ -18,7 +17,6 @@ function VeryfyEmail($request, $response, $args){
 		->first();
 
 	if ($result){
-		
 
 		$result->status = 0;
 		$result->save();
