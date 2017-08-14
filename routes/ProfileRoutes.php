@@ -36,7 +36,7 @@ function GetProfile($request, $response, $args) {
 					//exit;
 		if ($profile) {
 
-			return $m->data($profile);
+			return $m->data($response,$profile);
 		}
 
 	}
