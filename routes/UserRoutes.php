@@ -178,7 +178,7 @@ function UserSignup($request, $response, $args) {
       $pin = ""; //our default pin is blank.
       while($i < 4){
         //generate a random number between 0 and 9.
-          $pin .= mt_rand(0, 9);
+          $pin .= mt_rand(1, 9);
           $i++;
       }
 
