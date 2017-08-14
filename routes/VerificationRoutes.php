@@ -14,16 +14,6 @@ function VeryfyEmail($request, $response, $args){
 	$now = new DateTime();
 	$future = new DateTime("now +5 hours");
 
-	$user = Users::where('email',$email)->first();
-	$status = True;
-
-	$session = Sessions::create([
-   			  'token' => $data['token'],
-   			  'user_id' => $user->id,
-   			  'created_at' => $now,
-   			  'valid_till' => $future,
-   			  'status' => $status,
-   		   ]);
 
 	$m = new m;
 
@@ -40,6 +30,18 @@ function VeryfyEmail($request, $response, $args){
 
 		$result->status = 0;
 		$result->save();
+
+		$user = Users::where('email',$email)->first();
+		$status = True;
+
+		$session = Sessions::create([
+   			  'token' => $data['token'],
+   			  'user_id' => $user->id,
+   			  'created_at' => $now,
+   			  'valid_till' => $future,
+   			  'status' => $status,
+   		   ]);
+
 
 		$out = array('secure' => $data);
 		return $m->data($response,$out);
