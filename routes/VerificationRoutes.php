@@ -8,6 +8,10 @@ function VeryfyEmail($request, $response, $args){
 	$code = $request->getParams('code');
 	$email = $request->getParams('email');
 
+	$server = $request->getServerParams();
+	$now = new DateTime();
+	$future = new DateTime("now +5 hours");
+
 	$m = new m;
 
 	$result = Verification::where('status',1)
@@ -18,9 +22,13 @@ function VeryfyEmail($request, $response, $args){
 
 	if ($result){
 
+		$token = new Apps\Controllers\Token;
+    	$data = $token->create($server,$now,$future);
+
 		$result->status = 0;
 		$result->save();
-		return $m->success($response,'Verification completed');
+
+		return $m->data($response,$data);
 	}
 	else{
 
