@@ -2,6 +2,8 @@
 
 use Apps\Models\Verification;
 use Apps\Controllers\Messages as m;
+use Apps\Models\Users;
+use Apps\Models\Sessions;
 
 function VeryfyEmail($request, $response, $args){
 
@@ -11,6 +13,17 @@ function VeryfyEmail($request, $response, $args){
 	$server = $request->getServerParams();
 	$now = new DateTime();
 	$future = new DateTime("now +5 hours");
+
+	$user = Users::where('email',$email)->first();
+	$status = True;
+
+	$session = Sessions::create([
+   			  'token' => $data['token'],
+   			  'user_id' => $user->id,
+   			  'created_at' => $now,
+   			  'valid_till' => $future,
+   			  'status' => $status,
+   		   ]);
 
 	$m = new m;
 
