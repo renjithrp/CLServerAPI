@@ -28,7 +28,8 @@ function VeryfyEmail($request, $response, $args){
 		$result->status = 0;
 		$result->save();
 
-		return $m->data($response,$data);
+		$out = array('secure' => $data);
+		return $m->data($response,$out);
 	}
 	else{
 
