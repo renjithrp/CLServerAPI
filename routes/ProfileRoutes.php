@@ -34,10 +34,10 @@ function GetProfile($request, $response, $args) {
 					//$a = strtoupper(uniqid("ASQ"));
 					//echo $a;
 					//exit;
-		if ($profile) {
+		
 
-			return $m->data($response,$profile);
-		}
+		return $m->data($response,$profile);
+		
 
 	}
 	else {
