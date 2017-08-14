@@ -34,8 +34,11 @@ function GetProfile($request, $response, $args) {
 					//$a = strtoupper(uniqid("ASQ"));
 					//echo $a;
 					//exit;
+		if ($profile) {
 
-		return $response->withJson($profile);
+			return $m->data($profile);
+		}
+
 	}
 	else {
 		return $m->failed($response,"Invalid token");
