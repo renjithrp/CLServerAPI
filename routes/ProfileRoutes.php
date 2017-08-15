@@ -31,7 +31,7 @@ function GetProfile($request, $response, $args) {
 		$profile = Profile::where('profile.org_id',$org['org_id'])
 					->where('profile.user_id',$jwt)
 					->leftjoin('profiledp','profile.id','=','profiledp.profile_id')
-					->select('profile.id','profile.uniq_id','profile.firstname','profile.lastname','profile.phone','profile.address',
+					->select('profile.id as profile_id','profile.uniq_id','profile.firstname','profile.lastname','profile.phone','profile.address',
 						'profiledp.dp','profile.web','profile.skills','profile.about','profile.role_id',
 						'profile.created_at','profile.updated_at')
 					->where('profile.status','1')
