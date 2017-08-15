@@ -37,7 +37,7 @@ function GetProfile($request, $response, $args) {
 					->get();
 
 
-		return $m->data($response,$profile);
+		return $m->data($response,$profile[0]);
 		
 
 	}
