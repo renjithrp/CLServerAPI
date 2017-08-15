@@ -97,7 +97,7 @@ function UpdateProfile ($request, $response, $args) {
 				'address'	=> v::notEmpty(),
 				]);
 			
-			if ($validation->failed()){
+			/*if ($validation->failed()){
 	
 				$errors = array('status' => 'error',
 						'message' => $_SESSION['errors'],
@@ -111,7 +111,7 @@ function UpdateProfile ($request, $response, $args) {
           				->withHeader("Content-Type", "application/json")
           				->withJson($message);
 			}
-
+*/
 			$profileCheck = Profile::where('user_id',$user['id'])->first();
 	
         	if (!$profileCheck) {
