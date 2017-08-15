@@ -41,7 +41,7 @@ function GetProfile($request, $response, $args) {
 				->where('pro_id',$profile['id'])
 				->count();
 
-		if ($count) {
+		if (($count) && ($profile)) {
 
 			$sum =  ProfileRating::select('rating')
 				->where('pro_id',$profile['id'])
@@ -55,8 +55,11 @@ function GetProfile($request, $response, $args) {
     	}
     	else {
 
-    		$profile->rating = 0;
-			$profile->count = 0;
+    		if ($profile){
+
+    			$profile->rating = 0;
+				$profile->count = 0;
+			}
    		}
 
 
