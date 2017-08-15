@@ -34,10 +34,10 @@ function GetProfile($request, $response, $args) {
 						'profiledp.dp','profile.web','profile.skills','profile.about','profile.role_id',
 						'profile.created_at','profile.updated_at')
 					->where('profile.status','1')
-					->get();
+					->first();
 
 
-		return $m->data($response,$profile[0]);
+		return $m->data($response,$profile);
 		
 
 	}
