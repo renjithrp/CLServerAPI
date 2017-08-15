@@ -3,6 +3,7 @@ use Apps\Models\Users;
 use Apps\Models\Profile;
 use Apps\Models\Sessions;
 use Apps\Models\Profiledp;
+use Apps\Models\ProfileRating;
 use Apps\Models\Role;
 use Respect\Validation\Validator as v;
 use Apps\Controllers\Token;
@@ -35,6 +36,28 @@ function GetProfile($request, $response, $args) {
 						'profile.created_at','profile.updated_at')
 					->where('profile.status','1')
 					->first();
+
+		$count = ProfileRating::select('rating')
+				->where('pro_id',$profile['id'])
+				->count();
+
+		if ($count) {
+
+			$sum =  ProfileRating::select('rating')
+				->where('pro_id',$profile['id'])
+				->sum('rating');
+
+			$rating = (($sum/$count));
+
+			$profile->rating = $rating;
+			$profile->count = $count;
+
+    	}
+    	else {
+
+    		$profile->rating = 0;
+			$profile->count = 0;
+   		}
 
 
 		return $m->data($response,$profile);
