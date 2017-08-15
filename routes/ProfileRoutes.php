@@ -97,7 +97,7 @@ function UpdateProfile ($request, $response, $args) {
 				'address'	=> v::notEmpty(),
 				]);
 			
-			/*if ($validation->failed()){
+			if ($validation->failed()){
 	
 				$errors = array('status' => 'error',
 						'message' => $_SESSION['errors'],
@@ -111,7 +111,7 @@ function UpdateProfile ($request, $response, $args) {
           				->withHeader("Content-Type", "application/json")
           				->withJson($message);
 			}
-*/
+
 			$profileCheck = Profile::where('user_id',$user['id'])->first();
 	
         	if (!$profileCheck) {
@@ -126,8 +126,8 @@ function UpdateProfile ($request, $response, $args) {
     		$dp->dp = $request->getParam('dp');
     		$dp->save();
 
-    		unset($Values['org_id'],$Values['user_id'],$Values['role_id']);
     		$Values['firstname'] = $Values['org_name'];
+    		unset($Values['org_id'],$Values['user_id'],$Values['role_id']);
     		unset($Values['org_name'],$Values['uniq_id'],$Values['dp']);
 
     		$res = Profile::select('firstname','lastname')->where('id',$profileCheck['id'])
