@@ -28,6 +28,7 @@ function VeryfyEmail($request, $response, $args){
 		$token = new Apps\Controllers\Token;
     	$data = $token->create($server,$now,$future);
 
+
 		$result->status = 0;
 		$result->save();
 
@@ -42,9 +43,16 @@ function VeryfyEmail($request, $response, $args){
    			  'status' => $status,
    		   ]);
 
-
-		$out = array('secure' => $data);
-		return $m->data($response,$out);
+		$userinfo = array('profile_id' => Null,
+        	'firstname' => Null,
+        	'lastname' => Null,
+    		'email' => $user->email,
+    		'role_id' => $user->role_id,
+    		'org_id' => $user->org_id,
+    		'secure' => $data,
+    		);
+		
+		return $m->data($response,$userinfo);
 	}
 	else{
 

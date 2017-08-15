@@ -2,6 +2,7 @@
 use Apps\Models\Users;
 use Apps\Models\Profile;
 use Apps\Models\Sessions;
+use Apps\Models\Profiledp;
 use Apps\Models\Role;
 use Respect\Validation\Validator as v;
 use Apps\Controllers\Token;
@@ -28,13 +29,13 @@ function GetProfile($request, $response, $args) {
 
 		$profile = Profile::where('profile.org_id',$org['org_id'])
 					->where('profile.user_id',$jwt)
+					->leftjoin('profiledp','profile.id','=','profiledp.profile_id')
+					->select('profile.id','profile.uniq_id','profile.firstname','profile.lastname','profile.phone','profile.address',
+						'profiledp.dp','profile.web','profile.skills','profile.about','profile.role_id',
+						'profile.created_at','profile.updated_at')
 					->where('profile.status','1')
 					->get();
 
-					//$a = strtoupper(uniqid("ASQ"));
-					//echo $a;
-					//exit;
-		
 
 		return $m->data($response,$profile);
 		
@@ -93,13 +94,20 @@ function UpdateProfile ($request, $response, $args) {
     		}
 
     		$Values = $request->getParsedBody();
+
+    		$dp = Profiledp::where('profile_id',$profileCheck['id'])
+    				->first();
+    		$dp->dp = $request->getParam('dp');
+    		$dp->save();
+
     		unset($Values['org_id'],$Values['user_id'],$Values['role_id']);
     		$Values['firstname'] = $Values['org_name'];
-    		unset($Values['org_name']);
+    		unset($Values['org_name'],$Values['uniq_id'],$Values['dp']);
 
     		$res = Profile::select('firstname','lastname')->where('id',$profileCheck['id'])
     				->limit(1)
     				->update($Values);
+    		
     	
 			if ($res) {
 
@@ -142,12 +150,20 @@ function UpdateProfile ($request, $response, $args) {
     		}
 
     		$Values = $request->getParsedBody();
-    		unset($Values['org_id'],$Values['user_id'],$Values['role_id']);
+
+    		$dp = Profiledp::where('profile_id',$profileCheck['id'])
+    				->first();
+    		$dp->dp = $request->getParam('dp');
+    		$dp->save();
+
+    		unset($Values['org_id'],$Values['user_id'],$Values['role_id'],$Values['dp']);
 
 
     		$res = Profile::select('firstname','lastname')->where('id',$profileCheck['id'])
     				->limit(1)
     				->update($Values);
+
+    		
 
     		if ($res) {
 
@@ -213,6 +229,9 @@ function CreateProfile($request, $response, $args) {
    				return $m->failed($response,"Profile already exists");
     		}
 
+
+			$uniqid = strtoupper(uniqid("CL"));
+
 			$profileDb = Profile::create([
 
    				'firstname' => $request->getParam('org_name'),
@@ -220,16 +239,25 @@ function CreateProfile($request, $response, $args) {
    				'address' => $request->getParam('address'),
    				'web' => $request->getParam('web'),
    				'about' => $request->getParam('about'),
-   				'dp' => $request->getParam('dp'),
    				'org_id' => $user['org_id'],
    				'user_id' => $user['id'],
    				'role_id' => $user['role_id'],
    				'status' => '1',
+   				'uniq_id' => $uniqid,
    			]);
+
+   			$dp = Profiledp::create([
+
+   				'dp' => $request->getParam('dp'),
+   				'profile_id' => $profileDb['id'],
+
+   				]);
 
 			if ($profileDb) {
 
-				return $m->success($response,"Profile created");
+				$msg = array( 'profile_id' => $profileDb['id']);
+
+				return $m->data($response,$msg);
 			}
 			else{
 
@@ -266,6 +294,8 @@ function CreateProfile($request, $response, $args) {
 
 				return $m->failed($response,"Profile already exists");
     		}
+    		$uniqid = strtoupper(uniqid("CL"));
+
 			$profileDb = Profile::create([
 
    				'firstname' => $request->getParam('firstname'),
@@ -275,16 +305,26 @@ function CreateProfile($request, $response, $args) {
    				'web' => $request->getParam('web'),
    				'about' => $request->getParam('about'),
    				'skills' => $request->getParam('skills'),
-   				'dp' => $request->getParam('dp'),
    				'org_id' => $user['org_id'],
    				'user_id' => $user['id'],
    				'role_id' => $user['role_id'],
    				'status' => '1',
+   				'uniq_id' => $uniqid,
+
+   			]);
+
+   			$dp = Profiledp::create([
+
+   				'dp' => $request->getParam('dp'),
+   				'profile_id' => $profileDb['id'],
+
    			]);
 		
 			if ($profileDb) {
 
-				return $m->success($response,"Profile created");
+				$msg = array( 'profile_id' => $profileDb['id']);
+
+				return $m->data($response,$msg);
 			}
 			else{
 
