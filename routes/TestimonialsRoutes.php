@@ -21,6 +21,7 @@ function GetTestimonials ($request, $response, $args) {
 		$profile = Profile::select('id','role_id')
 					->where('user_id',$jwt)
 					->first();
+
 		if ($profile){
 
 			$Testimonials = Testimonials::rightjoin('profile','profile.user_id','=','testimonials.user_id')

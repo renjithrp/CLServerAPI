@@ -4,6 +4,6 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 class Subject extends Eloquent
 {
 	protected $table = 'subject';
-	#protected $fillable = ['email', 'password', 'role_id', 'org_id', 'status', 'created_at'];
+	protected $fillable = ['name', 'description', 'user_id', 'sec_id', 'status'];
 
 }

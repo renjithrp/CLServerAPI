@@ -152,6 +152,15 @@ function UserSignup($request, $response, $args) {
    	else {
 
    		$org_id = $request->getParam('org_id');
+      $id = new Getid;
+      $checkid = $id->org($org_id)->first();
+
+
+      if (!$checkid) {
+
+         return $m->error($response);
+
+      }
    	}
 
    	Users::create([
@@ -189,7 +198,7 @@ function UserSignup($request, $response, $args) {
       ]);
 
     $status = $mail->verification($email,$pin);
-
+    return $m->success($response, "$email:password");
     if ($status){
       return $m->success($response, "Verification code send to $email");
     }

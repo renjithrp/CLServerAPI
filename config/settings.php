@@ -26,6 +26,12 @@ return [
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => 'cldb_',
+        ],
+
+        's3' => [
+            'bucket' => 'coloborativelearning',
+            'key'   => 'AKIAJRFPB2J7GWHF2SXQ',
+            'secret' => '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'
         ]
     ],
 ];

@@ -34,6 +34,18 @@ $app->get('/sections/{sec_id}/subjects/{subj_id}/exams', 'GetAllExams');
 $app->get('/sections/{sec_id}/subjects/{subj_id}/notes/{note_id}', 'GetNote');
 $app->get('/sections/{sec_id}/subjects/{subj_id}/exams/{exam_id}', 'GetExam');
 
+
+//Create Section
+$app->post('/sections', 'CreateSections');
+$app->put('/sections/{sec_id}', 'UpdateSections');
+
+//create Subject
+$app->post('/sections/{sec_id}', 'CreateSubjects');
+$app->post('/sections/{sec_id}/subjects', 'CreateSubjects');
+$app->put('/sections/{sec_id}/subjects/{subj_id}', 'UpdateSubjects');
+
+
+
 //Exams Routes
 $app->get('/sections/{sec_id}/subjects/{subj_id}/exams/{exam_id}/attend', 'AttendExam');
 $app->post('/sections/{sec_id}/subjects/{subj_id}/exams/{exam_id}/attend', 'PostExam');
@@ -44,3 +56,11 @@ $app->get('/role', 'GetRole');
 
 //VeryfyEmail
 $app->post('/verify', 'VeryfyEmail');
+
+
+//Dp
+$app->post('/dp', 'Uploaddp');
+$app->get('/dp/{image}', 'Getdp');
+
+//Search
+$app->get('/search/{query}', 'Search');

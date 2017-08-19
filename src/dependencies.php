@@ -38,10 +38,6 @@ $container['validator'] = function($container) use ($validator) {
 		return $validator;
 };
 
-/*
-$app->add(new \Slim\Middleware\JwtAuthentication([
-    "secure" => false,
-    "passthrough" => ["/token", "/test"],
-    "secret" => "Nasj23832jsdnasndak12esjkasdn",
-]));
-*/
+
+
+$container['upload_directory'] = __DIR__ . '/tmp';

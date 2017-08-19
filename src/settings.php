@@ -26,6 +26,15 @@ return [
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
+        ],
+
+        'roles' => [
+            'admin' => '100',
+            'organization' => '101',
+            'staff' => '102',
+            'student' => '103',
+            'parent' => '104',
+
         ]
     ],
 ];

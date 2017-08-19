@@ -1,0 +1,137 @@
+API DOC Version-0.4
+
+1. Signup
+
+URL : http://52.14.179.77:9091/signup
+METHOD : POST
+
+		{
+			"username":"Aswani",
+			"password":"password",
+			"email":"aswani@test.com",
+			"role_id":"101"
+		}
+2. Verify code
+
+METHOD : POST
+URL : http://52.14.179.77:9091/verify
+
+		{
+			"email":"aswani@test.com",
+			"code":"4741"
+		}
+3. LOGIN
+
+	METHOD : GET
+	HEADER :- Authorization : <token>
+	URL : http://52.14.179.77:9091/login
+	
+4. MY PROFILE
+
+URL: http://52.14.179.77:9091/profile
+
+	a. CREATE/UPDATE PROFILE FOR USERS
+
+		METHOD POST - CREATE PROFILE
+		METHOD PUT - UPDATE PROFILE
+		
+			{
+				"firstname": "Aswani",
+				"lastname": "Gangadharan",
+				"phone": "+22555552",
+				"address": "Bhhahaswda",
+				"web": "http:/asdafafs",
+				"skills": "mxnnxcvx",
+				"about": "asppsfsdfisdifisfisdaf",
+				"dp": "http://22555"
+			}
+	b. CREATE PROFILE/UPDATE PROFILE FOR ORGANIZATION
+		METHOD POST - CREATE PROFILE
+		METHOD PUT - UPDATE PROFILE
+		
+			{
+				"org_name": "GPTC",
+				"phone": "+22555552",
+				"address": "Bhhahaswda",
+				"web": "http:/asdafafs",
+				"about": "asppsfsdfisdifisfisdaf",
+				"dp": "http://22555"
+			}
+	c. GET MY PROFILE
+		METHOD GET
+		HEADER : - Authorization : <token>
+		
+5. USERS PROFILE 
+
+URL : http://52.14.179.77:9091/profile/{profileID}
+	 METHOD GET
+	 HEADER : - Authorization : <token>
+	 
+6. RATING
+
+
+	a. GET MY RATING
+		URL: http://52.14.179.77:9091/rating
+		HEADER : - Authorization : <token>
+		METHOD GET
+		
+	b. GET USER RATING
+		
+		URL: http://52.14.179.77:9091/rating/{profileID}
+		HEADER : - Authorization : <token>
+		METHOD GET
+		
+	c. POST RATING
+	
+		URL: http://52.14.179.77:9091/rating/{profileID}
+		HEADER : - Authorization : <token>
+		METHOD POST
+		
+		{
+			"rating" : 5
+		}
+7. TESTIMONIALS
+
+	a. GET MY TESTIMONIALS
+		URL: http://52.14.179.77:9091/testimonials
+		HEADER : - Authorization : <token>
+		METHOD GET
+		
+	b. GET USERS TESTIMONIALS
+	
+		URL: http://52.14.179.77:9091/testimonials/{profileID}
+		HEADER : - Authorization : <token>
+		METHOD GET
+		
+	c. WRITE TESTIMONIALS
+	
+		URL: http://52.14.179.77:9091/testimonials/{profileID}
+		HEADER : - Authorization : <token>
+		METHOD POST
+		{
+			"testimonial" : "blaa... bla.... blaa"
+
+		}
+
+8. GET MY ROLE
+	
+		URL: http://52.14.179.77:9091/role
+		HEADER : - Authorization : <token>
+		METHOD GET
+
+
+9. LOGOUT
+
+		URL: http://52.14.179.77:9091/logout
+		HEADER : - Authorization : <token>
+		METHOD GET
+	
+
+
+		
+		
+
+		
+
+	
+			

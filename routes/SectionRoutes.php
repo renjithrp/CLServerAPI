@@ -9,11 +9,151 @@ use Apps\Models\Qustions;
 use Apps\Models\Answers;
 use Apps\Controllers\Token;
 use Apps\Controllers\Messages as m;
+use Respect\Validation\Validator as v;
 use Apps\Controllers\Getid;
 use Apps\Controllers\GetName;
 
 
-#$app->get('/sections', function ($request, $response, $args) {
+
+function CreateSections($request, $response, $args) {
+
+	$token = new Apps\Controllers\Token;
+	$security = $request->getHeader('authorization');
+	$jwt = $token->validate($security);
+	//if the token is valid it will return UserID
+	$m = new m;
+	if ($jwt){
+
+		$id = new Getid;
+		$gname = new GetName;
+		$orgId = $id->org($jwt)->first();
+		$role = $id->role($jwt)->first();
+
+		$validation = new Apps\Validation\Validator;
+
+		$validation->validate($request, [
+		  'sec_name' => v::notEmpty(),
+	   	]);
+
+	   	if ($validation->failed()){
+	
+			$errors = array('status' => 'failed',
+			'message' => $_SESSION['errors'],
+
+			);
+			unset($_SESSION['errors']);
+
+			$message = array();
+    		$message['response_status'] = $errors;
+    		$message['response_data'] = array();
+    		return $response->withStatus(200)
+          		->withHeader("Content-Type", "application/json")
+          		->withJson($message);
+		}
+
+
+		if ($role == 101){
+
+			$sections = Sections::create([
+				'name' => $request->getParam('sec_name'),
+				'description' => $request->getParam('sec_description'),
+				'user_id' => $jwt,
+				'org_id' => $orgId,
+				'status' => '1'
+				]);
+
+			if ($sections){
+				$data = array('sec_id' => $sections['id']);
+				return $m->data($response,$data);
+			}
+			else{
+
+				return $m->error($response);
+			}
+		}
+		else {
+
+			return $m->error($response);
+		}
+	}
+	else {
+
+		return $m->failed($response,"Invalid token");
+	}
+}
+
+function UpdateSections($request, $response, $args) {
+
+	$token = new Apps\Controllers\Token;
+	$security = $request->getHeader('authorization');
+	$jwt = $token->validate($security);
+	//if the token is valid it will return UserID
+	$m = new m;
+	if ($jwt){
+
+		$id = new Getid;
+		$gname = new GetName;
+		$orgId = $id->org($jwt)->first();
+		$role = $id->role($jwt)->first();
+		$secID = $request->getAttribute('sec_id');
+
+	
+		$validation = new Apps\Validation\Validator;
+
+		$validation->validate($request, [
+		  'sec_name' => v::notEmpty(),
+	   	]);
+
+	   	if ($validation->failed()){
+	
+			$errors = array('status' => 'failed',
+			'message' => $_SESSION['errors'],
+
+			);
+			unset($_SESSION['errors']);
+
+			$message = array();
+    		$message['response_status'] = $errors;
+    		$message['response_data'] = array();
+    		return $response->withStatus(200)
+          		->withHeader("Content-Type", "application/json")
+          		->withJson($message);
+		}
+
+
+		if ($role == 101){
+
+			$sections = Sections::where('user_id',$jwt)
+							->where('org_id',$orgId)
+							->where('status', '1')
+							->where('id',$secID)
+							->first();
+
+
+			if ($sections){
+
+				$sections['name'] = $request->getParam('sec_name');
+				$sections['description'] = $request->getParam('sec_description');
+				$sections->save();
+
+				$data = array('sec_id' => $sections['id']);
+				return $m->data($response,$data);
+			}
+			else{
+
+				return $m->error($response);
+			}
+		}
+		else {
+
+			return $m->error($response);
+		}
+	}
+	else {
+
+		return $m->failed($response,"Invalid token");
+	}
+}
 
 function GetSections($request, $response, $args) {
 

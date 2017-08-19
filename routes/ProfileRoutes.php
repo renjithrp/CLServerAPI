@@ -163,7 +163,7 @@ function UpdateProfile ($request, $response, $args) {
 				$message = array();
     			$message['response_status'] = $errors;
     			$message['response_data'] = array();
-    			return $response->withStatus(200)
+    			return $response->withStatus(400)
           				->withHeader("Content-Type", "application/json")
           				->withJson($message);
 			}
@@ -243,7 +243,7 @@ function CreateProfile($request, $response, $args) {
 				$message = array();
     			$message['response_status'] = $errors;
     			$message['response_data'] = array();
-    			return $response->withStatus(200)
+    			return $response->withStatus(400)
           				->withHeader("Content-Type", "application/json")
           				->withJson($message);
 			}
@@ -309,7 +309,7 @@ function CreateProfile($request, $response, $args) {
 				$message = array();
     			$message['response_status'] = $errors;
     			$message['response_data'] = array();
-    			return $response->withStatus(200)
+    			return $response->withStatus(400)
           				->withHeader("Content-Type", "application/json")
           				->withJson($message);
 			}
