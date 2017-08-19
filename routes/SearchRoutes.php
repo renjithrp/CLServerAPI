@@ -9,7 +9,6 @@ use Apps\Controllers\Token;
 
 function Search($request, $response, $args) {
 
-
 	$token = new Apps\Controllers\Token;
 	$security = $request->getHeader('authorization');
 	$jwt = $token->validate($security);

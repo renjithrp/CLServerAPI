@@ -33,6 +33,7 @@ function GetRole($request, $response, $args) {
 			return $m->data($response,$role);
 		}
 		else{
+
 			return $m->error($response);
 		}
 	}

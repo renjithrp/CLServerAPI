@@ -125,10 +125,93 @@ URL : http://52.14.179.77:9091/profile/{profileID}
 		URL: http://52.14.179.77:9091/logout
 		HEADER : - Authorization : <token>
 		METHOD GET
+
+10. SEARCH
+
+	URL: http://{url}/search/{search_string}
+	HEADER : - Authorization : <token>
+	METHOD : GET
+	
+	SAMPLE OUTPUT : http://{url}/search/staff
+	
+		{
+			"response_status":{
+						"status": "success"
+						},
+			"response_data":{
+						"profiles":[
+							{"profile_id": "248", "firstname": "Staff.112964488", "lastname": "Staff.279486875", "role_id": "102",…},
+							{"profile_id": "249", "firstname": "Staff.744172892", "lastname": "Staff.972604542", "role_id": "102",…}
+							],
+						"exams":[],
+						"notes":[]
+					}
+		}
+11. CREATE SECTIONS
+
+	URL : http://{url}/sections
+	HEADER : - Authorization : <token>
+	METHOD : POST
+	PERMISSION : ORGANIZATION
+	
+	JSON : {
+			"sec_name" : "SECTION_NAME",
+			"sec_description" : "SECTION DESCIPTION"
+			}
+	
+	
+12. GET SECTIONS
+	
+	URL : http://{url}/sections
+	HEADER : - Authorization : <token>
+	METHOD : GET
+	PERMISSION : ALL
+	
+13. UPDATE SECTIONS
+
+	URL : http://{url}/sections/{sec_id}
+	HEADER : - Authorization : <token>
+	METHOD : PUT
+	PERMISSION : ORGANIZATION
+	
+		JSON : {
+			"sec_name" : "SECTION_NAME",
+			"sec_description" : "SECTION DESCIPTION"
+			}
+
+14. CREATE SUBJECT
+
+	URL: http://{url}/sections/{sec_id}/subjects
+	HEADER : - Authorization : <token>
+	METHOD : POST
+	PERMISSION : ORGANIZATION, STAFF
+	
+	JSON : {
+			"subj_name" : "SUBJECT_NAME",
+			"subj_description" : "SUBJECT_DESCRIPTION"
+			}
 	
 
+15. GET SUBJECT
 
-		
+	
+	URL: http://{url}/sections/{sec_id}/subjects
+	HEADER : - Authorization : <token>
+	METHOD : GET
+	PERMISSION : ALL
+	
+	
+16. UPDATE SUBJECT
+
+	URL: http://{url}/sections/{sec_id}/subjects/{subj_id}
+	HEADER : - Authorization : <token>
+	METHOD : PUT
+	PERMISSION : OWNER OF THE SUBJECT(STAFF, ORGANIZATION)
+	
+		JSON : {
+			"subj_name" : "SUBJECT_NAME",
+			"subj_description" : "SUBJECT_DESCRIPTION"
+			}
 		
 
 		
