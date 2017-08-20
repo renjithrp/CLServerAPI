@@ -60,7 +60,7 @@ $app->post('/verify', 'VeryfyEmail');
 
 //Dp
 $app->post('/dp', 'Uploaddp');
-$app->get('/dp/{image}', 'Getdp');
+$app->get('/dp', 'Getdp');
 
 //Search
 $app->get('/search/{query}', 'Search');

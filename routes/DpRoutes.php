@@ -1,44 +1,122 @@
 <?php
 
 use Apps\Controllers\AmazonS3;
+use Apps\Models\Profiledp;
+use Apps\Controllers\Messages as m;
+use Apps\Controllers\Getid;
 
 function Uploaddp($request, $response, $args) {
 
+	$token = new Apps\Controllers\Token;
+	$security = $request->getHeader('authorization');
+	$jwt = $token->validate($security);
+	//if the token is valid it will return UserID
+	$m = new m;
+	if ($jwt){
 
 
-	#$s3 = new AmazonS3;
-	#echo $s3->uploaddp('sss','sss');
 
-	$TempName =  basename($_FILES["fileToUpload"]['tmp_name']);
-	$FileName = basename($_FILES["fileToUpload"]['name']);
+		$id = new Getid;
+		$profileID = $id->profile($jwt)->first();
 
-	$extension = explode('.',$FileName);
-	$extension = strtolower(end($extension));
+		$TempName =  basename($_FILES["fileToUpload"]['tmp_name']);
+		$FileName = basename($_FILES["fileToUpload"]['name']);
 
-	$key = md5(uniqid());
+		$extension = explode('.',$FileName);
+		$extension = strtolower(end($extension));
 
-	$TempFileName = "{$key}.{$extension}";
-	$TempFilePath = "../tmp/{$key}.{$extension}";
+		$key = md5(uniqid());
 
-	$move = move_uploaded_file($_FILES["fileToUpload"]['tmp_name'], $TempFilePath);
+		$TempFileName = "{$key}.{$extension}";
+		$TempFilePath = "../tmp/{$key}.{$extension}";
 
-	if ($move) {
+		$move = move_uploaded_file($_FILES["fileToUpload"]['tmp_name'], $TempFilePath);
 
-		$s3 = new AmazonS3;
-		$s3->uploaddp($key,$TempFilePath);
+		if ($move) {
+
+			$s3 = new AmazonS3;
+			$s3->uploaddp($key,$TempFilePath);
+
+			$dp = Profiledp::where('profile_id', $profileID)
+					->where('status',1)->first();
+
+			if ($dp){
+				$dp->status = 0;
+				$dp->save();
+			}
+
+			$updatedp = Profiledp::create([
+				'dp' => $TempFileName,
+				'profile_id' => $profileID,
+				'status' => 1,
+
+				]);
+
+			
+			unlink($TempFilePath);
+
+			if ($updatedp) {
+
+				$data = [];
+				$data['profile_id'] = $profileID;
+				$data['dp'] = $s3->getdp($TempFileName);
+
+				return $m->data($response,$data);
+			}
+			else{
+
+				return $m->error($response);
+			}
+		}
+		else {
+
+			return $m->error($response);
+
+		}
 	}
 	else {
 
-
+		return $m->failed($response,"Invalid token");
 	}
 }
 
 function Getdp($request, $response, $args){
 
 
-	#TempFilePath = '206cbadfef4eec165f5e1a9619ec6ec1.jpg';
-	$TempFilePath = $request->getAttribute('image');
-	$s3 = new AmazonS3;
-	$s3->getdp($TempFilePath);
+	$token = new Apps\Controllers\Token;
+	$security = $request->getHeader('authorization');
+	$jwt = $token->validate($security);
+	//if the token is valid it will return UserID
+	$m = new m;
+
+	if ($jwt){
+
+			$id = new Getid;
+			$profileID = $id->profile($jwt)->first();
+
+			#TempFilePath = '206cbadfef4eec165f5e1a9619ec6ec1.jpg';
+			#$TempFilePath = $request->getAttribute('image');
+
+			$dp = Profiledp::select('dp')
+					->where('profile_id', $profileID)
+					->where('status',1)
+					->pluck('dp')
+					->first();
+
+
+			$s3 = new AmazonS3;
+			$s3->getdp($dp);
+
+			$data = [];
+			$data['profile_id'] = $profileID;
+			$data['dp'] = $s3->getdp($dp);
+
+			return $m->data($response,$data);
+
+	}
+	else {
+
+		return $m->failed($response,"Invalid token");
+	}
 
 }

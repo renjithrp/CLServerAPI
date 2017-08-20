@@ -5,6 +5,6 @@ class Profiledp extends Eloquent
 {
 	protected $table = 'profiledp';
 
-	 protected $fillable = ['dp','profile_id'];
+	 protected $fillable = ['dp','profile_id','status'];
 
 }

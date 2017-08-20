@@ -67,7 +67,6 @@ class AmazonS3{
 
 			die('Error:' . $e->getMessage());
 		}
-	echo 'Done';
 
 	}
 
@@ -100,12 +99,9 @@ class AmazonS3{
         'Bucket' => $bucketName,
         'Key'    => $keyName
     	));
-    	#header("Content-Type: {$result['ContentType']}");
-
-    	header("Content-Type: image/jpeg");
 
     	$base64 = base64_encode($result['Body']) ;
 
-    	echo "<img src=data:image/gif;base64,$base64 alt='Base64 encoded image' width='150' height='150'/>";
+    	return "data:image/gif;base64,$base64";
 	}	
 }
