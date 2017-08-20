@@ -19,8 +19,8 @@ function Uploaddp($request, $response, $args) {
 		$id = new Getid;
 		$profileID = $id->profile($jwt)->first();
 
-		$TempName =  basename($_FILES["fileToUpload"]['tmp_name']);
-		$FileName = basename($_FILES["fileToUpload"]['name']);
+		$TempName =  basename($_FILES["dp"]['tmp_name']);
+		$FileName = basename($_FILES["dp"]['name']);
 
 		$extension = explode('.',$FileName);
 		$extension = strtolower(end($extension));
@@ -30,7 +30,23 @@ function Uploaddp($request, $response, $args) {
 		$TempFileName = "{$key}.{$extension}";
 		$TempFilePath = "../tmp/{$key}.{$extension}";
 
-		$move = move_uploaded_file($_FILES["fileToUpload"]['tmp_name'], $TempFilePath);
+		$move = move_uploaded_file($_FILES["dp"]['tmp_name'], $TempFilePath);
+
+		$size = getimagesize($TempFilePath);
+
+		if (@is_array($size)){
+
+			if (($size[0] !== 128) && ($size[1] !== 128)){
+
+				return $m->error($response);
+
+			}
+						
+		}
+		else {
+
+			return $m->error($response);
+		}
 
 		if ($move) {
 
@@ -51,9 +67,6 @@ function Uploaddp($request, $response, $args) {
 				'status' => 1,
 
 				]);
-
-			
-			unlink($TempFilePath);
 
 			if ($updatedp) {
 

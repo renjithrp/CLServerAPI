@@ -8,6 +8,8 @@ use Apps\Models\Role;
 use Respect\Validation\Validator as v;
 use Apps\Controllers\Token;
 use Apps\Controllers\Messages as m;
+use Apps\Controllers\AmazonS3;
+use Apps\Controllers\Getid;
 
 
 function GetProfile($request, $response, $args) {
@@ -21,8 +23,12 @@ function GetProfile($request, $response, $args) {
 
 	if ($jwt){
 
+		$id = new Getid;
+		$role = $id->role($jwt)->first();
+
 		//get Organization 
 		$org = Users::select('org_id')->where('id',$jwt)->first();
+
 
 		$Organization = Profile::select('firstname as organization')
 						->where('role_id','101')
@@ -62,10 +68,22 @@ function GetProfile($request, $response, $args) {
 			}
    		}
 
+   		$profiledp = Profiledp::select('dp')
+					->where('profile_id', $profile['profile_id'])
+					->where('status',1)
+					->pluck('dp')
+					->first();
+
+
+   		if ($profiledp){
+   			
+   			$s3 = new AmazonS3;
+		
+			$profile['dp'] = $s3->getdp($profiledp);
+
+		}
 
 		return $m->data($response,$profile);
-		
-
 	}
 	else {
 		return $m->failed($response,"Invalid token");
@@ -93,7 +111,7 @@ function UpdateProfile ($request, $response, $args) {
 			$validation = new Apps\Validation\Validator;
 
 			$validation->validate($request, [
-				'org_name' => v::notEmpty(),
+				'firstname' => v::notEmpty(),
 				'phone' => v::noWhitespace()->notEmpty(),
 				'address'	=> v::notEmpty(),
 				]);
@@ -122,14 +140,14 @@ function UpdateProfile ($request, $response, $args) {
 
     		$Values = $request->getParsedBody();
 
-    		$dp = Profiledp::where('profile_id',$profileCheck['id'])
-    				->first();
-    		$dp->dp = $request->getParam('dp');
-    		$dp->save();
+    		#$dp = Profiledp::where('profile_id',$profileCheck['id'])
+    		#		->first();
+    		#$dp->dp = $request->getParam('dp');
+    		#$dp->save();
 
-    		$Values['firstname'] = $Values['org_name'];
+    		
     		unset($Values['org_id'],$Values['user_id'],$Values['role_id']);
-    		unset($Values['org_name'],$Values['uniq_id'],$Values['dp']);
+    		unset($Values['uniq_id'],$Values['dp']);
 
     		$res = Profile::select('firstname','lastname')->where('id',$profileCheck['id'])
     				->limit(1)
@@ -231,7 +249,7 @@ function CreateProfile($request, $response, $args) {
 			$validation = new Apps\Validation\Validator;
 
 			$validation->validate($request, [
-				'org_name' => v::notEmpty(),
+				'firstname' => v::notEmpty(),
 				'phone' => v::noWhitespace()->notEmpty(),
 				'address'	=> v::notEmpty(),
 				]);
@@ -263,7 +281,7 @@ function CreateProfile($request, $response, $args) {
 
 			$profileDb = Profile::create([
 
-   				'firstname' => $request->getParam('org_name'),
+   				'firstname' => $request->getParam('firstname'),
    				'phone' => $request->getParam('phone'),
    				'address' => $request->getParam('address'),
    				'web' => $request->getParam('web'),

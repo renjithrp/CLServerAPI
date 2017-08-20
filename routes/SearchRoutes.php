@@ -6,6 +6,8 @@ use Apps\Models\Notes;
 use Apps\Controllers\Messages as m;
 use Apps\Controllers\Getid;
 use Apps\Controllers\Token;
+use Apps\Models\Profiledp;
+use Apps\Controllers\AmazonS3;
 
 function Search($request, $response, $args) {
 
@@ -25,6 +27,7 @@ function Search($request, $response, $args) {
 		#echo $profileID ;
 		#exit;
 
+		$s3 = new AmazonS3;
 
 		$query = $request->getAttribute('query');
 
@@ -36,16 +39,27 @@ function Search($request, $response, $args) {
 
 						if ($count == 1){
 
-							$profiles = Profile::where('profile.org_id',$orgId)
+							$profiles = Profile::leftjoin('profiledp','profile.id','=','profiledp.profile_id')
+											->where('profiledp.status',1)
+											->where('profile.org_id',$orgId)
 											->where('firstname','LIKE','%'.$name[0].'%')
 											->orWhere('skills','LIKE','%'.$name[0].'%')
 											->leftjoin('role','role.id','=','profile.role_id')
 											->select('profile.id as profile_id','profile.firstname','profile.lastname',
-																'profile.role_id','role.name as role_name')
+																'profile.role_id','role.name as role_name','profiledp.dp as dp')
 
 											->where('profile.status',1)
 											->where('profile.id','!=',$profileID)
 											->get();
+
+							foreach ($profiles as &$profile) {
+
+								if ($profile['dp']){
+
+									$profile['dp'] = $s3->getdp($profile['dp']);
+
+								}
+							}
 
 							$exams = Exams::rightjoin('profile','profile.user_id','=','exams.user_id')
 											->where('profile.org_id',$orgId)
@@ -83,7 +97,9 @@ function Search($request, $response, $args) {
 						}
 						elseif($count == 2){
 
-							$profiles = Profile::where('profile.org_id',$orgId)
+							$profiles = Profile::leftjoin('profiledp','profile.id','=','profiledp.profile_id')
+											->where('profiledp.status',1)
+											->where('profile.org_id',$orgId)
 											->where('lastname','LIKE','%'.$name[1].'%')
 											->OrWhere('firstname',$name[0])
 											->orWhere('skills','LIKE','%'.$name[0].'%')
@@ -94,7 +110,17 @@ function Search($request, $response, $args) {
 
 											->where('profile.status',1)
 											->where('profile.id','!=',$profileID)
-											->get();;
+											->get();
+
+							foreach ($profiles as &$profile) {
+
+								if ($profile['dp']){
+
+										$profile['dp'] = $s3->getdp($profile['dp']);
+
+								}
+							}
+
 
 							$exams = Exams::rightjoin('profile','profile.user_id','=','exams.user_id')
 											->where('profile.org_id',$orgId)
@@ -132,7 +158,9 @@ function Search($request, $response, $args) {
 						}
 						else {
 
-							$profiles = Profile::where('profile.org_id',$orgId)
+							$profiles = Profile::leftjoin('profiledp','profile.id','=','profiledp.profile_id')
+											->where('profiledp.status',1)
+											->where('profile.org_id',$orgId)
 											->where('lastname','LIKE',$name[1].' '.$name[2].'%')
 											->OrWhere('firstname',$name[0])
 											->orWhere('skills','LIKE','%'.$name[0].'%')
@@ -146,6 +174,15 @@ function Search($request, $response, $args) {
 											->where('profile.id','!=',$profileID)
 											->orderBy('profile.lastname','DESC')
 											->get();
+
+							foreach ($profiles as &$profile) {
+
+								if ($profile['dp']){
+
+									$profile['dp'] = $s3->getdp($profile['dp']);
+
+								}
+							}
 
 							$exams = Exams::rightjoin('profile','profile.user_id','=','exams.user_id')
 											->where('profile.org_id',$orgId)
