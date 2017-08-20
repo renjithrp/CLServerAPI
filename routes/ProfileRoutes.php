@@ -80,6 +80,7 @@ function UpdateProfile ($request, $response, $args) {
 	$jwt = $token->validate($security);
 	$m = new m;
 
+
 	if ($jwt){
 
 		$user = Users::select('id','role_id','org_id')
@@ -137,7 +138,8 @@ function UpdateProfile ($request, $response, $args) {
     	
 			if ($res) {
 
-				return $m->success($response,"Profile updated");
+				$data = array('profile_id' => $profileCheck['id']);
+				return $m->data($response,$data);
     		}
     		else {
 
@@ -193,7 +195,8 @@ function UpdateProfile ($request, $response, $args) {
 
     		if ($res) {
 
-				return $m->success($response,"Profile updated");
+				$data = array('profile_id' => $profileCheck['id']);
+				return $m->data($response,$data);
     		}
     		else {
 
