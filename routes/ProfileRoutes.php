@@ -289,7 +289,7 @@ function CreateProfile($request, $response, $args) {
    				'org_id' => $user['org_id'],
    				'user_id' => $user['id'],
    				'role_id' => $user['role_id'],
-   				'status' => '1',
+   				'status' => 1,
    				'uniq_id' => $uniqid,
    			]);
 
