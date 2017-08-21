@@ -19,13 +19,9 @@ function Search($request, $response, $args) {
 	if ($jwt){
 
 		$id = new Getid;
-		#$gname = new GetName;
+		
 		$orgId = $id->org($jwt)->first();
 		$profileID = $id->profile($jwt)->first();
-
-		#echo $orgId;
-		#echo $profileID ;
-		#exit;
 
 		$s3 = new AmazonS3;
 
@@ -221,7 +217,6 @@ function Search($request, $response, $args) {
 											->get();
 						}
 
-
 						$data['profiles'] = $profiles;
 						$data['exams'] = $exams;
 						$data['notes'] = $notes;
@@ -232,8 +227,4 @@ function Search($request, $response, $args) {
 
 		return $m->failed($response,"Invalid token");
 	}
-
-						#return $response->withJson($data) ;
-
-
 }

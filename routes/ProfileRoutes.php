@@ -293,12 +293,6 @@ function CreateProfile($request, $response, $args) {
    				'uniq_id' => $uniqid,
    			]);
 
-   			$dp = Profiledp::create([
-
-   				'dp' => $request->getParam('dp'),
-   				'profile_id' => $profileDb['id'],
-
-   				]);
 
 			if ($profileDb) {
 
@@ -341,6 +335,7 @@ function CreateProfile($request, $response, $args) {
 
 				return $m->failed($response,"Profile already exists");
     		}
+    		
     		$uniqid = strtoupper(uniqid("CL"));
 
 			$profileDb = Profile::create([
@@ -360,12 +355,6 @@ function CreateProfile($request, $response, $args) {
 
    			]);
 
-   			$dp = Profiledp::create([
-
-   				'dp' => $request->getParam('dp'),
-   				'profile_id' => $profileDb['id'],
-
-   			]);
 		
 			if ($profileDb) {
 
