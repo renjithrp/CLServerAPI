@@ -15,7 +15,6 @@ function Uploaddp($request, $response, $args) {
 	if ($jwt){
 
 
-
 		$id = new Getid;
 		$profileID = $id->profile($jwt)->first();
 
@@ -32,7 +31,10 @@ function Uploaddp($request, $response, $args) {
 
 		$move = move_uploaded_file($_FILES["dp"]['tmp_name'], $TempFilePath);
 
-		$size = getimagesize($TempFilePath);
+		if ($_FILES["dp"]['tmp_name']){
+
+			$size = getimagesize($TempFilePath);
+		}
 
 		if (@is_array($size)){
 

@@ -50,6 +50,11 @@ $app->put('/sections/{sec_id}/subjects/{subj_id}', 'UpdateSubjects');
 $app->get('/sections/{sec_id}/subjects/{subj_id}/exams/{exam_id}/attend', 'AttendExam');
 $app->post('/sections/{sec_id}/subjects/{subj_id}/exams/{exam_id}/attend', 'PostExam');
 
+//Notes
+
+$app->post('/sections/{sec_id}/subjects/{subj_id}/notes', 'CreateNotes');
+$app->put('/sections/{sec_id}/subjects/{subj_id}/notes/{note_id}', 'UpdateNotes');
+
 //Role
 $app->get('/role', 'GetRole');
 

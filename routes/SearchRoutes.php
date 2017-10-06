@@ -36,7 +36,7 @@ function Search($request, $response, $args) {
 						if ($count == 1){
 
 							$profiles = Profile::leftjoin('profiledp','profile.id','=','profiledp.profile_id')
-											->where('profiledp.status',1)
+											//->where('profiledp.status',1)
 											->where('profile.org_id',$orgId)
 											->where('firstname','LIKE','%'.$name[0].'%')
 											->orWhere('skills','LIKE','%'.$name[0].'%')
@@ -94,7 +94,7 @@ function Search($request, $response, $args) {
 						elseif($count == 2){
 
 							$profiles = Profile::leftjoin('profiledp','profile.id','=','profiledp.profile_id')
-											->where('profiledp.status',1)
+											//->where('profiledp.status',1)
 											->where('profile.org_id',$orgId)
 											->where('lastname','LIKE','%'.$name[1].'%')
 											->OrWhere('firstname',$name[0])
@@ -155,7 +155,7 @@ function Search($request, $response, $args) {
 						else {
 
 							$profiles = Profile::leftjoin('profiledp','profile.id','=','profiledp.profile_id')
-											->where('profiledp.status',1)
+											//->where('profiledp.status',1)
 											->where('profile.org_id',$orgId)
 											->where('lastname','LIKE',$name[1].' '.$name[2].'%')
 											->OrWhere('firstname',$name[0])
