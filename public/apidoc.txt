@@ -1,4 +1,4 @@
-API DOC Version-0.4
+﻿API DOC Version-0.4
 
 1. Signup
 
@@ -213,8 +213,25 @@ URL : http://52.14.179.77:9091/profile/{profileID}
 			"subj_description" : "SUBJECT_DESCRIPTION"
 			}
 		
+17. CREATE NOTES
 
+	URL: http://{url}/sections/{sec_id}/subjects/{subj_id}/notes
+	HEADER : - Authorization : <token>
+	METHOD : POST
+	PERMISSION : OWNER OF THE SUBJECT(STAFF, ORGANIZATION)
+	
+		JSON : {
+  			"note_name" : "NOTE_NAME",
+  			"note_description" : "NOTE_DESCRIPTION"
+			}
 		
+18. GET ALL NOTES
+
+	URL: http://{url}/sections/{sec_id}/subjects/{subj_id}/notes
+	HEADER : - Authorization : <token>
+	METHOD : GET
+	PERMISSION : ALL
 
 	
+
 			
