@@ -1,7 +1,6 @@
 <?php
 
 
-
 namespace Apps\Controllers;
 
 ini_set('display_errors',1);
@@ -18,9 +17,10 @@ class AmazonS3{
 	function uploaddp($key,$TempFilePath){
 
 		$bucketName = 'coloborativelearning';
-		$IAM_KEY = 'AKIAIQ5ZXPZHSNYVTGPA';
-		$IAM_SECRET = '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';
-
+		//$IAM_KEY = 'AKIAIQ5ZXPZHSNYVTGPA';
+		//$IAM_SECRET = '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';
+		$IAM_KEY = getenv('AWS_KEY');
+		$IAM_SECRET = getenv('AWS_SECRET');
 
 
 		try {
@@ -73,9 +73,11 @@ class AmazonS3{
 	function getdp($TempFilePath){
 
 		$bucketName = 'coloborativelearning';
-		$IAM_KEY = 'AKIAIQ5ZXPZHSNYVTGPA';
-		$IAM_SECRET = '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';
-
+		//$IAM_KEY = 'AKIAIQ5ZXPZHSNYVTGPA';
+		//$IAM_SECRET = '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';
+		$IAM_KEY = getenv('AWS_KEY');
+		$IAM_SECRET = getenv('AWS_SECRET');
+		
 		try {
 
 			$s3 = S3Client::factory(

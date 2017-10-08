@@ -44,7 +44,9 @@ $app->post('/sections/{sec_id}', 'CreateSubjects');
 $app->post('/sections/{sec_id}/subjects', 'CreateSubjects');
 $app->put('/sections/{sec_id}/subjects/{subj_id}', 'UpdateSubjects');
 
-
+//link section and subject
+$app->post('/linkprofile', 'UpdateLinkProfile');
+$app->get('/linkprofile', 'GetLinkProfile');
 
 //Exams Routes
 $app->get('/sections/{sec_id}/subjects/{subj_id}/exams/{exam_id}/attend', 'AttendExam');

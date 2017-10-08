@@ -232,6 +232,43 @@ URL : http://52.14.179.77:9091/profile/{profileID}
 	METHOD : GET
 	PERMISSION : ALL
 
-	
+19. UPDATE DP
 
+	URL: http://{url}/dp
+	HEADER : - Authorization : <token>
+	METHOD : POST
+	PERMISSION : ALL
+	
+	FILE : dp
+	FILE SIZE : 128px x 128px
+
+20. CREATE LINK PROFILE
+
+	URL:  http://{url}/linkprofile
+	HEADER : - Authorization : <token>
+	METHOD : POST
+	PERMISSION : STAFF, STUDENT
+	JSON : {
+  			"sec_id" : "SECTION ID",
+  			"subj_id" : "SUBJECT ID"
+			
+		}
+21. GET LINK PROFILE
+
+	URL:  http://{url}/linkprofile
+	HEADER : - Authorization : <token>
+	METHOD : GET
+	PERMISSION : STAFF, STUDENT
+
+23. DELETE LINK PROFILE
+
+	URL:  http://{url}/linkprofile
+	HEADER : - Authorization : <token>
+	METHOD : POST
+	PERMISSION : STAFF, STUDENT
+	JSON : {
+  			"sec_id" : "SECTION ID",
+  			"subj_id" : "SUBJECT ID"
+			"STATUS" : "DELETE"	
+		}
 			
