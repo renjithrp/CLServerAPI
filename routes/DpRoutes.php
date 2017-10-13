@@ -38,11 +38,11 @@ function Uploaddp($request, $response, $args) {
 
 		if (@is_array($size)){
 
-			if (($size[0] !== 128) && ($size[1] !== 128)){
+			#if (($size[0] !== 128) && ($size[1] !== 128)){
 
 				return $m->error($response);
 
-			}
+			#}
 						
 		}
 		else {
