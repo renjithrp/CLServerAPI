@@ -177,7 +177,7 @@ function UpdateLinkProfile ($request, $response, $args) {
 
 				'pro_id' => $profileID,
 				'sec_id' => $sec_id,
-				'sub_id' => '',
+				'sub_id' => '0',
 				'status' => 1, ]);
 
 				$data['sections'] = Assocsection::rightjoin('section', 'assocsection.sec_id','=','section.id')
