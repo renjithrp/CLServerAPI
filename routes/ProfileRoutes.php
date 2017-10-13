@@ -197,10 +197,14 @@ function UpdateProfile ($request, $response, $args) {
 
     		$Values = $request->getParsedBody();
 
-    		$dp = Profiledp::where('profile_id',$profileCheck['id'])
-    				->first();
-    		$dp->dp = $request->getParam('dp');
-    		$dp->save();
+    		#$getdp = $request->getParam('dp');
+
+    		#if ($getdp) {
+    		#	$dp = Profiledp::where('profile_id',$profileCheck['id'])
+    		#		->first();
+    		#	$dp->dp = $request->getParam('dp');
+    		#	$dp->save();
+    		#}
 
     		unset($Values['org_id'],$Values['user_id'],$Values['role_id'],$Values['dp']);
 
