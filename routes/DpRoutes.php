@@ -40,8 +40,7 @@ function Uploaddp($request, $response, $args) {
 
 			if (($size[0] !== 128) && ($size[1] !== 128)){
 
-				#return $m->error($response);
-				$a = "test";
+				return $m->failed($response,"file size should be 128 x 128");
 
 			}
 						
