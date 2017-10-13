@@ -41,7 +41,7 @@ function UpdateLinkProfile ($request, $response, $args) {
 				->first();
 		}
 		elseif ($role == 103){
-			$subj_id = '';
+			$subj_id = '0';
 			$links = Assocsection::where('pro_id', $profileID)
 				->first();
 		}
