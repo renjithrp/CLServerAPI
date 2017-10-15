@@ -4,6 +4,6 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 class Answers extends Eloquent
 {
 	protected $table = 'answers';
-	# protected $fillable = ['email', 'password', 'role_id', 'org_id', 'status', 'created_at'];
+	protected $fillable = ['answer', 'qust_id', 'flag','status', 'created_at'];
 
 }

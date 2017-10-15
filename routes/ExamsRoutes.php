@@ -47,7 +47,7 @@ function AttendExam($request, $response, $args) {
 
     	$examToken = $token->examtoken($server,$now,$future);
 
-		if (($role[0] == '101')){
+		if (($role[0] == '103')){
 
 
 			$section = Sections::select('id as sec_id', 'name as sec_name')
@@ -178,6 +178,179 @@ function PostExam($request, $response, $args) {
 		else{
 			return $m->failed($response,"Invalid exam token");
 		}
+	}
+	else {
+
+		return $m->failed($response,"Invalid token");
+	}
+}
+
+function CreateExam($request, $response, $args) {
+
+$token = new Apps\Controllers\Token;
+$security = $request->getHeader('authorization');
+$jwt = $token->validate($security);
+//if the token is valid it will return UserID
+$m = new m;
+if ($jwt){
+
+		$secID = $request->getAttribute('sec_id');
+		$subjID = $request->getAttribute('subj_id');
+
+
+		$id = new Getid;
+		$orgId = $id->org($jwt);
+		$role = $id->role($jwt);
+
+		if (($role[0] == '102')){
+
+			$exams = Exams::create([
+
+				'name' => $request->getParam('exam_name'),
+				'description' => $request->getParam('exam_description'),
+				'sub_id' => (int)$subjID,
+				'duration' => (int)$request->getParam('duration'),
+				'published' => (int)$request->getParam('published'),
+				'user_id' => $jwt,
+				'sec_id' => (int)$secID,
+				'status' => 1
+				]);
+
+			if ($exams){
+				
+				return $m->data($response,$exams);
+			}
+			else{
+				return $m->error($response);
+
+			}
+
+		}
+		else{
+
+			return $m->error($response);
+		}
+
+	}
+	else {
+
+		return $m->failed($response,"Invalid token");
+	}
+}
+
+function UpdateExam($request, $response, $args) {
+
+$token = new Apps\Controllers\Token;
+$security = $request->getHeader('authorization');
+$jwt = $token->validate($security);
+//if the token is valid it will return UserID
+$m = new m;
+if ($jwt){
+
+		$secID = $request->getAttribute('sec_id');
+		$subjID = $request->getAttribute('subj_id');
+		$examID = $request->getAttribute('exam_id');
+
+		$id = new Getid;
+		$orgId = $id->org($jwt);
+		$role = $id->role($jwt);
+
+		if (($role[0] == '102')){
+
+			$exams = Exams::where('id',$examID)
+				->where('user_id',$jwt)->first();
+
+			
+			if ($exams){
+
+				$exams['name'] = $request->getParam('exams_name');
+				$exams['description'] =  $request->getParam('exams_description');
+				$exams['published'] =  (int)$request->getParam('published');
+				$exams['duration'] =  (int)$request->getParam('duration');
+
+				$exams->save();
+
+				return $m->data($response,$exams);
+			}
+			else{
+
+				return $m->error($response);
+			}
+
+		}
+		else{
+
+			return $m->error($response);
+		}
+
+	}
+	else {
+
+		return $m->failed($response,"Invalid token");
+	}
+}
+
+function CreateQustions($request, $response, $args) {
+
+$token = new Apps\Controllers\Token;
+$security = $request->getHeader('authorization');
+$jwt = $token->validate($security);
+//if the token is valid it will return UserID
+$m = new m;
+if ($jwt){
+
+		$secID = $request->getAttribute('sec_id');
+		$subjID = $request->getAttribute('subj_id');
+		$examID = $request->getAttribute('exam_id');
+
+		$id = new Getid;
+		$orgId = $id->org($jwt);
+		$role = $id->role($jwt);
+
+		if (($role[0] == '102')){
+
+			$question = Qustions::create([
+
+				'question' => $request->getParam('question'),
+				'exam_id' => $examID,
+				'status' => 1
+				]);
+
+			$answers = $request->getParam('answers');
+
+			if ($question){
+			
+				foreach ($answers as $ans) {
+				
+					$a = Answers::create([
+
+						'answer' => $ans['answer'],
+						'flag' => $ans['flag'],
+						'qust_id' => $question->id,
+						'status' => 1
+
+					]);
+				}
+			}
+			else{
+				return $m->error($response);
+			}
+			
+			if ($a ){
+				
+				$question['answers'] = $answers;
+				return $m->data($response,$question);
+			}
+			else{
+				return $m->error($response);
+
+			}
+		}
+		else{
+
+			return $m->error($response);
+		}
+
 	}
 	else {
 

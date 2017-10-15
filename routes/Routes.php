@@ -51,6 +51,11 @@ $app->get('/linkprofile', 'GetLinkProfile');
 //Exams Routes
 $app->get('/sections/{sec_id}/subjects/{subj_id}/exams/{exam_id}/attend', 'AttendExam');
 $app->post('/sections/{sec_id}/subjects/{subj_id}/exams/{exam_id}/attend', 'PostExam');
+$app->post('/sections/{sec_id}/subjects/{subj_id}/exams', 'CreateExam');
+$app->put('/sections/{sec_id}/subjects/{subj_id}/exams/{exam_id}', 'UpdateExam');
+$app->post('/sections/{sec_id}/subjects/{subj_id}/exams/{exam_id}/qa', 'CreateQustions');
+
+
 
 //Notes
 
