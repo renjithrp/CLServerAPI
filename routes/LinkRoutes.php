@@ -67,7 +67,7 @@ function UpdateLinkProfile ($request, $response, $args) {
 									->select('sec_id','section.name')
 									->where('assocsection.status',1)
 									->get();
-					$data['sections'] = $dt->unique('sec_id');
+					$data['sections'] = $dt->unique('sec_id')->values()->all();
 
 					#return $m->data($response,$dt->unique('sec_id'));
 
@@ -109,7 +109,7 @@ function UpdateLinkProfile ($request, $response, $args) {
 									->where('assocsection.status',1)
 									->get();	
 
-					$data['sections'] = $dt->unique('sec_id');
+					$data['sections'] = $dt->unique('sec_id')->values()->all();
 
 					foreach ($data['sections'] as $sections) {
 						$sectionID = $sections['sec_id'];
@@ -157,7 +157,7 @@ function UpdateLinkProfile ($request, $response, $args) {
 									->where('assocsection.status',1)
 									->get();
 
-				$data['sections'] = $dt->unique('sec_id');
+				$data['sections'] = $dt->unique('sec_id')->values()->all();
 
 				foreach ($data['sections'] as $sections) {
 					$sectionID = $sections['sec_id'];
@@ -237,7 +237,7 @@ $server = $request->getServerParams();
 									->where('assocsection.status',1)
 									->get();
 
-			$data['sections'] = $dt->unique('sec_id');
+			$data['sections'] = $dt->unique('sec_id')->values()->all();
 
 			foreach ($data['sections'] as $sections) {
 					$sectionID = $sections['sec_id'];
