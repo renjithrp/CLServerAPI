@@ -263,8 +263,8 @@ if ($jwt){
 			
 			if ($exams){
 
-				$exams['name'] = $request->getParam('exams_name');
-				$exams['description'] =  $request->getParam('exams_description');
+				$exams['name'] = $request->getParam('exam_name');
+				$exams['description'] =  $request->getParam('exam_description');
 				$exams['published'] =  (int)$request->getParam('published');
 				$exams['duration'] =  (int)$request->getParam('duration');
 

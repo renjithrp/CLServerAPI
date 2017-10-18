@@ -343,6 +343,10 @@ function GetAllExams ($request, $response, $args) {
 										->orderBy('exams.created_at', 'DESC')
 										->get();
 
+			if(!$data[$a][$b]['exams']){
+				$data[$a][$b]['exams'] = null;
+			}
+
 			if($data){	
 
 				return $m->data($response,$data);
@@ -401,6 +405,10 @@ function GetNotesAndExams ($request, $response, $args) {
 										->where('exams.status',1)
 										->orderBy('exams.created_at', 'DESC')
 										->get();
+			if(!$data[$a][$b]['exams']){
+
+				$data[$a][$b]['exams'] = null;
+			}
 
 			$data[$a][$b]['notes'] = Notes::rightjoin('profile','profile.user_id','=','notes.user_id')
 										->select('notes.id as note_id','notes.name as note_name','notes.description as note_description','notes.file',
@@ -410,6 +418,11 @@ function GetNotesAndExams ($request, $response, $args) {
 										->where('notes.status',1)
 										->orderBy('notes.created_at', 'DESC')
 										->get();
+
+			if(!$data[$a][$b]['note']){
+
+				$data[$a][$b]['note'] = null;
+			}
 
 			if($data){	
 
@@ -471,6 +484,10 @@ $token = new Apps\Controllers\Token;
 										->where('notes.status',1)
 										->orderBy('notes.created_at', 'DESC')
 										->get();
+			if(!$data[$a][$b]['note']){
+
+				$data[$a][$b]['note'] = null;
+			}
 
 			if($data){	
 
@@ -538,17 +555,23 @@ function GetExam($request, $response, $args){
 										->where('exams.sub_id',$subjID)
 										->where('exams.status',1)
 										->where('exams.id',$examID)->first();
+
+				if($data[$a][$b]['exam']){
 				
-				$data[$a][$b]['exam']['qustions'] = Qustions::where('qustion.exam_id',$examID)->get();
+					$data[$a][$b]['exam']['qustions'] = Qustions::where('qustion.exam_id',$examID)->get();
 
-				foreach($data[$a][$b]['exam']['qustions'] as $q){
+					foreach($data[$a][$b]['exam']['qustions'] as $q){
 
-					$q->answers =  Answers::select('id as ans_id', 'answer','flag')
+						$q->answers =  Answers::select('id as ans_id', 'answer','flag')
 									->where('qust_id',$q['id'])
 									->where('status','1')
 									->get();			
 					}
+				}
+				else{
 
+					$data[$a][$b]['exam'] = null;		
+				}
 				if($data){	
 
 					return $m->data($response,$data);
