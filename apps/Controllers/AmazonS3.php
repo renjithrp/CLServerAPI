@@ -103,7 +103,7 @@ class AmazonS3{
     	));
 
     	$base64 = base64_encode($result['Body']) ;
-
-    	return "data:image/gif;base64,$base64";
+    	return "$base64";
+    	#return "data:image/gif;base64,$base64";
 	}	
 }
