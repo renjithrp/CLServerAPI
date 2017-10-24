@@ -76,3 +76,9 @@ $app->get('/dp', 'Getdp');
 
 //Search
 $app->get('/search/{query}', 'Search');
+
+//Performance
+$app->get('/cronp', 'CronPerformance');
+$app->get('/performance', 'Performance');
+$app->get('/performance/{pro_id}', 'ProPerformance');
+
