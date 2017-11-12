@@ -82,3 +82,6 @@ $app->get('/cronp', 'CronPerformance');
 $app->get('/performance', 'Performance');
 $app->get('/performance/{pro_id}', 'ProPerformance');
 
+
+//Marks
+$app->get('/marks/{pro_id}', 'GetMarks');

@@ -54,7 +54,7 @@ require __DIR__ . '/../routes/SearchRoutes.php';
 require __DIR__ . '/../routes/LinkRoutes.php';
 require __DIR__ . '/../routes/CronPerformance.php';
 require __DIR__ . '/../routes/Performance.php';
-
+require __DIR__ . '/../routes/Marks.php';
 
 require __DIR__ . '/../routes/Routes.php';
 
