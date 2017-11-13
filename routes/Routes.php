@@ -8,6 +8,7 @@ $app->post('/signup','UserSignup');
 
 #ProfileRoutes
 $app->get('/profile', 'GetProfile');
+$app->get('/profile/{pro_id}', 'GetProfileStudent');
 $app->put('/profile', 'UpdateProfile');
 $app->post('/profile', 'CreateProfile');
 

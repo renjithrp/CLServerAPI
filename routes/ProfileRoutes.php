@@ -376,3 +376,82 @@ function CreateProfile($request, $response, $args) {
 		return $m->failed($response,"Invalid token");
 	}
 }
+
+function GetProfileStudent($request, $response, $args) {
+
+	$server = $request->getServerParams();
+	$token = new Apps\Controllers\Token;
+	$security = $request->getHeader('authorization');
+	$jwt = $token->validate($security);
+	$m = new m;
+	//if the token is valid it will return UserID
+
+	if ($jwt){
+
+		$id = new Getid;
+		$role = $id->role($jwt)->first();
+		$profileID = $request->getAttribute('pro_id');
+
+		//get Organization 
+		$org = Users::select('org_id')->where('id',$jwt)->first();
+
+
+		$Organization = Profile::select('firstname as organization')
+						->where('role_id','101')
+						->where('id',$org['org_id'])->pluck('organization');
+
+		$profile = Profile::where('profile.org_id',$org['org_id'])
+					->where('profile.id',$profileID)
+					->leftjoin('profiledp','profile.id','=','profiledp.profile_id')
+					->select('profile.id as profile_id','profile.uniq_id','profile.firstname','profile.lastname','profile.phone','profile.address',
+						'profiledp.dp','profile.web','profile.skills','profile.about','profile.role_id',
+						'profile.created_at','profile.updated_at')
+					->where('profile.status','1')
+					->first();
+
+		$count = ProfileRating::select('rating')
+				->where('pro_id',$profileID)
+				->count();
+
+		if (($count) && ($profile)) {
+
+			$sum =  ProfileRating::select('rating')
+				->where('pro_id',$profileID)
+				->sum('rating');
+
+			$rating = (($sum/$count));
+
+			$profile->rating = $rating;
+			$profile->count = $count;
+
+    	}
+    	else {
+
+    		if ($profile){
+
+    			$profile->rating = 0;
+				$profile->count = 0;
+			}
+   		}
+
+   		$profiledp = Profiledp::select('dp')
+					->where('profile_id', $profileID)
+					->where('status',1)
+					->pluck('dp')
+					->first();
+
+
+   		if ($profiledp){
+   			
+   			$s3 = new AmazonS3;
+		
+			$profile['dp'] = $s3->getdp($profiledp);
+
+		}
+
+		return $m->data($response,$profile);
+	}
+	else {
+		return $m->failed($response,"Invalid token");
+	}
+ }
